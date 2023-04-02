@@ -9,11 +9,16 @@
  * 
  */
 
+#include <stdint.h>
 #include <Arduino.h>
+
+#include "config.h"
+#include "basicFunctions.h"
+
 
 void setup(){
 
-  Serial.begin(9600);
+  initArduino();
 
 }
 
