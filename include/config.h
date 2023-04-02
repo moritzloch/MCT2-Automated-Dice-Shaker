@@ -15,6 +15,7 @@
  * @brief Defining input and output pins
  * 
  */
+//Color Sensor TCS3200 pins
 #define  TCS_S2 12
 #define  TCS_S3 13
 #define  TCS_0E  8           //LOW = ENABLED
