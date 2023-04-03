@@ -53,3 +53,27 @@ uint8_t setRGB(uint8_t redVal, uint8_t greenVal, uint8_t blueVal){
 
   return 0;
 }
+
+/**
+ * @brief Wait for Serial input while Serial buffer is empty 
+ * 
+ * @return Input char 
+ */
+char getChar(){
+
+	while(Serial.available() == 0);
+
+	return(toupper(Serial.read()));
+}
+
+/**
+ * @brief Wait until all characters from serial input are cleared
+ * 
+ * @return uint8_t 0
+ */
+uint8_t clearInput(){
+
+	while(Serial.read() != -1);
+
+  return 0;
+}

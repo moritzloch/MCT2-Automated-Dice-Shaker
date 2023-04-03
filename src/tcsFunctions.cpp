@@ -18,29 +18,6 @@
 
 
 /**
- * @brief waiting for Serial input
- * 
- * @return Inut char 
- */
-char getChar(){
-
-	while(Serial.available() == 0);
-
-	return(toupper(Serial.read()));
-}
-
-/**
- * @brief Clear all characters from serial input
- * 
- * @return uint8_t 0
- */
-uint8_t clearInput(){
-	while (Serial.read() != -1);
-
-    return 0;
-}
-
-/**
  * @brief Finite State Machine for reading RGB values from TCS3200 color sensor
  * 
  * @param state Current FSM state
