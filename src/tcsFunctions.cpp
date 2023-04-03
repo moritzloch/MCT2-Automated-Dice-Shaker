@@ -105,3 +105,38 @@ uint8_t fsmReadValue(uint8_t state, uint8_t readType, colorData rgb){
 
 	return(state);
 }
+
+
+/**
+ * @brief Match RGB value to closest described color
+ * 
+ * @param rgb RGB sensor value
+ * @param matchedColorIndex Index of matched color in color description table
+ * @return uint8_t 0
+ */
+uint8_t colorMatch(colorData rgb, uint8_t &matchedColorIndex){
+
+	int32_t	difference;
+	uint32_t errorSquare;
+    uint32_t minimumError = 999999L;
+
+	for (uint8_t i = 0; i < ARRAY_SIZE(colorDescriptions); i++){    //compare rgb value with every decribed color
+
+		errorSquare = 0;
+
+		for (uint8_t j = 0; j < RGB_SIZE; j++){                      //compare all RGB components
+			difference = colorDescriptions[i].rgb.value[j] - rgb.value[j];
+			errorSquare += (difference * difference);
+		}
+
+		if (errorSquare < minimumError){	//set new minimum error (current closest match)
+			minimumError = errorSquare;
+			matchedColorIndex = i;
+		}
+
+		if(errorSquare == 0) break;	//perfect match
+		
+	}
+
+	return 0;
+}

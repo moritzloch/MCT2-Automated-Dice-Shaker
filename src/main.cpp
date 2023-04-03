@@ -43,6 +43,10 @@ void loop(){
 
     case 2:	//read color
       readState = fsmReadValue(readState, READ_RGB, rgb);
+
+      uint8_t matchedColorIndex;
+      colorMatch(rgb, matchedColorIndex);
+      
       break;
 
     default:
