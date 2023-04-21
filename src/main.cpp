@@ -22,11 +22,12 @@
 void setup(){
 
   initArduino();
-  Serial.print("hello");
+
 }
 
 void loop(){
 
-
+  uint8_t i;
+  lcdSelection(mainMenuItemNames, i);
 
 }

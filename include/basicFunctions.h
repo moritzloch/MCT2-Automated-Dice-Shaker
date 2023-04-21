@@ -14,7 +14,7 @@
                 strcpy(itemNames[i], itemNamesInput[i]);
             }
         }
-};
+};*/
 
 static const char* mainMenuItemNames[3] = {
     "Maexle",
@@ -22,7 +22,7 @@ static const char* mainMenuItemNames[3] = {
     "Einstellungen"
 };
 
-static MenuItems mainMenuItems(mainMenuItemNames, (uint8_t) 3);*/
+//static MenuItems mainMenuItems(mainMenuItemNames, (uint8_t) 3);
 
 
 uint8_t initArduino();
@@ -35,6 +35,6 @@ uint8_t clearInput();
 
 uint8_t createCustomLCDChars();
 
-//uint8_t lcdSelection(MenuItems menuItems, uint8_t selectedIndex);
+uint8_t lcdSelection(const char** menuItems, uint8_t &selectedIndex);
 
 #endif
