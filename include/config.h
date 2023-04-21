@@ -16,8 +16,13 @@
  * 
  */
 //Color Sensor TCS3200 pins
-#define  TCS_S2 12
-#define  TCS_S3 13
-#define  TCS_0E  8           //LOW = ENABLED
+#define TCS_S2  12
+#define TCS_S3  13
+#define TCS_0E   8             //LOW = ENABLED
+#define TCS_OUT 47             //Automatically selected for Arduino Mega by FreqCount.h
+//RGB LED Output pins
+#define RGB_RED   2   
+#define RGB_BLUE  3
+#define RGB_GREEN 4             
 
 #endif

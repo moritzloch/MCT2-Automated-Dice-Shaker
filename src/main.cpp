@@ -11,8 +11,10 @@
 
 #include <stdint.h>
 #include <Arduino.h>
+#include <MD_TCS230.h>
 
 #include "config.h"
+#include "tcsFunctions.h"
 #include "basicFunctions.h"
 
 
@@ -23,5 +25,7 @@ void setup(){
 }
 
 void loop(){
+
   
+
 }
