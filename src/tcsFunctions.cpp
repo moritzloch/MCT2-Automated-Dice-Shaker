@@ -1,4 +1,5 @@
 /**
+ * !This library is unused because of unreliabilty issues of the sensor
  * @file TCSFunctions.cpp
  * @author Marco Schweizer, Moritz Loch
  * @brief Functions for TCS3200 colour sensor
@@ -139,4 +140,43 @@ uint8_t colorMatch(colorData rgb, uint8_t &matchedColorIndex){
 	}
 
 	return 0;
+}
+
+
+/**
+ * TODO: One time black/white calibration or on buton press
+ * @brief Read RGB value and get color of dice
+ * 
+ * @param matchedColorIndex Index of matched color in color description table
+ * @return uint8_t 0
+ */
+uint8_t getDiceColor(uint8_t &matchedColorIndex){
+
+    static uint8_t	runState = 0;	//state of run cycle, one time black/white calibration
+    static uint8_t	readState = 0;  //state of read cycle, gets reset
+    colorData rgb;                  //rgb value of perceived color
+
+    switch(runState){
+        case 0:	//calibrate black
+        readState = fsmReadValue(readState, READ_BLACK_CALIB, rgb);
+        if(readState == 0) runState++;
+        break;
+
+        case 1:	//calibrate white
+        readState = fsmReadValue(readState, READ_WHITE_CALIB, rgb);
+        if(readState == 0) runState++;
+        break;
+
+        case 2:	//read color
+        readState = fsmReadValue(readState, READ_RGB, rgb);
+
+        colorMatch(rgb, matchedColorIndex);
+        
+        break;
+
+        default:
+        runState = 0;	//start again if we get here as something is wrong
+    }
+
+    return 0;
 }
