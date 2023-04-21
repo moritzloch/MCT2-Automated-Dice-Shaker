@@ -11,6 +11,12 @@
  * 
  */
 
+
+#define FREQ 100
+
+#define LCD_COLS    16
+#define LCD_ROWS     2
+
 /**
  * @brief Defining input and output pins
  * 
@@ -23,6 +29,17 @@
 //RGB LED Output pins
 #define RGB_RED   2   
 #define RGB_BLUE  3
-#define RGB_GREEN 4             
+#define RGB_GREEN 4   
+//LCD-Display pins
+#define LCD_RS  52    
+#define LCD_EN  50 
+#define LCD_D4  48
+#define LCD_D5  46 
+#define LCD_D6  44
+#define LCD_D7  42 
+//Rotary Encoder pins
+#define RE_SW   21
+#define RE_DT   20
+#define RE_CLK  19
 
 #endif

@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <Arduino.h>
 #include <MD_TCS230.h>
+#include <Encoder.h>
 
 #include "config.h"
 #include "tcsFunctions.h"
@@ -21,11 +22,11 @@
 void setup(){
 
   initArduino();
-
+  Serial.print("hello");
 }
 
 void loop(){
 
-  
+
 
 }
