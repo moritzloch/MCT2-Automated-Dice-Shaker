@@ -30,6 +30,8 @@ uint8_t initMenu(){
   lcd.begin(LCD_COLS, LCD_ROWS);
   createCustomLCDChars();
 
+  attachInterrupt(digitalPinToInterrupt(RE_SW), encoderPressed, FALLING);
+
   return 0;
 }
 
@@ -50,6 +52,11 @@ uint8_t resetMenuProperties(MenuProperties &menuProperties, uint8_t itemNumber){
   menuProperties.selectedIndex = 0;
 
   return 0;
+}
+
+
+void encoderPressed(){
+  Serial.println("State Transition");
 }
 
 

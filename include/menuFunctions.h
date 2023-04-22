@@ -28,6 +28,8 @@ uint8_t createCustomLCDChars();
 
 uint8_t resetMenuProperties(MenuProperties &menuProperties, uint8_t itemNumber);
 
+void encoderPressed();
+
 uint8_t lcdScrollMenu(MenuProperties &menuProperties, const char** menuItemNames);
 
 #endif
