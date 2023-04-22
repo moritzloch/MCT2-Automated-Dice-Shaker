@@ -17,18 +17,27 @@ struct MenuProperties{
 
 static MenuProperties mainMenuProperties;
 
-static const char* mainMenuItemNames[3] = {
+static const char* mainMenuItemNames[] = {
     "Maexle",
     "Wuerfeln",
     "Einstellungen"
 };
 
+static MenuProperties gameSettingsMenuProperties;
+
+static const char* gameSettingsMenuItemNames[] = {
+    "SPIEL BEGINNEN",
+    "Anzahl Spieler",
+    "Anzahl Leben",
+    "Anzahl Wuerfel"
+};
+
+
+uint8_t lcdPrint(const char* text);
 
 uint8_t createCustomLCDChars();
 
 uint8_t resetMenuProperties(MenuProperties &menuProperties, uint8_t itemNumber);
-
-void encoderPressed();
 
 uint8_t lcdScrollMenu(MenuProperties &menuProperties, const char** menuItemNames);
 

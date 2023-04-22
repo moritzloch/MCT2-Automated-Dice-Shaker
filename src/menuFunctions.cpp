@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include "customLCDCharacters.h"
+#include "gameStateFunctions.h"
 
 #include "menuFunctions.h"
 
@@ -30,7 +31,16 @@ uint8_t initMenu(){
   lcd.begin(LCD_COLS, LCD_ROWS);
   createCustomLCDChars();
 
-  attachInterrupt(digitalPinToInterrupt(RE_SW), encoderPressed, FALLING);
+  return 0;
+}
+
+
+uint8_t lcdPrint(const char* text){
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(text);
+  delay(100);
 
   return 0;
 }
@@ -52,11 +62,6 @@ uint8_t resetMenuProperties(MenuProperties &menuProperties, uint8_t itemNumber){
   menuProperties.selectedIndex = 0;
 
   return 0;
-}
-
-
-void encoderPressed(){
-  Serial.println("State Transition");
 }
 
 
@@ -87,6 +92,8 @@ uint8_t lcdScrollMenu(MenuProperties &menuProperties, const char** menuItemNames
     lcd.setCursor(0,1);
     lcd.print(menuItemNames[menuProperties.topIndex + 1]);
   }
+
+  menuProperties.selectedIndex = menuProperties.topIndex + menuProperties.cursorPos;
 
   return 0;
 }

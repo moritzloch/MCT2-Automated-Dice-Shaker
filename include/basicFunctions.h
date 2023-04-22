@@ -12,4 +12,8 @@ char getChar();
 
 uint8_t clearInput();
 
+void encoderPressed();
+
+void resetPressed();
+
 #endif
