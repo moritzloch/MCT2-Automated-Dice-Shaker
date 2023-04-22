@@ -12,18 +12,12 @@
 #include <stdint.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include <LiquidCrystal.h>
-#include <Encoder.h>
 
 #include "config.h"
 #include "tcsFunctions.h"
-#include "customLCDCharacters.h"
+#include "menuFunctions.h"
 
 #include "basicFunctions.h"
-
-
-static LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
-static Encoder encoder(RE_CLK, RE_DT);
 
 
 /**
@@ -42,12 +36,8 @@ uint8_t initArduino(){
 
     //TCS.begin();                      //initiate TCS3200 color sensor
 
-    lcd.begin(LCD_COLS, LCD_ROWS);
-    createCustomLCDChars();
+    initMenu();
 
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("hello");
     return 0;
 }
 
@@ -91,43 +81,3 @@ uint8_t clearInput(){
 
   return 0;
 }
-
-
-uint8_t createCustomLCDChars(){
-
-  lcd.createChar(arrowLeft, arrowLeftChar);
-
-  return 0;
-}
-
-
-/*uint8_t lcdSelection(MenuItems menuItems, uint8_t selectedIndex){
-
-  static uint8_t menuItemNumber = menuItems.itemNumber;
-  int32_t encoderPos = encoder.read() / 4;
-
-  if(encoderPos > menuItemNumber) selectedIndex = menuItemNumber;
-  else if (encoderPos < 0) selectedIndex = 0;
-  else selectedIndex = encoderPos;
-  Serial.print(menuItems.itemNames[selectedIndex]);
-  Serial.print("\t");
-  Serial.print(menuItems.itemNames[selectedIndex + 1]);
-  Serial.print("\t");
-  Serial.print(menuItemNumber);
-  Serial.print("\t");
-  Serial.print(encoderPos);
-  Serial.print("\t");
-  Serial.print(selectedIndex);
-  Serial.print("\r\n");
-  
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print(menuItems.itemNames[selectedIndex]);
-  lcd.setCursor(0,1);
-  lcd.print(menuItems.itemNames[selectedIndex + 1]);  
-
-  lcd.setCursor(15, 0);
-  lcd.write((byte) arrowLeft);
-
-  return 0;
-}*/

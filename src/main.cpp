@@ -17,16 +17,18 @@
 #include "config.h"
 #include "tcsFunctions.h"
 #include "basicFunctions.h"
+#include "menuFunctions.h"
 
 
 void setup(){
 
   initArduino();
-  Serial.print("hello");
+  resetMenuProperties(mainMenuProperties, 3);
+
 }
 
 void loop(){
 
-
-
+  lcdScrollMenu(mainMenuProperties, mainMenuItemNames);
+  
 }
