@@ -12,18 +12,12 @@
 #include <stdint.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include <LiquidCrystal.h>
-#include <Encoder.h>
 
 #include "config.h"
 #include "tcsFunctions.h"
-#include "customLCDCharacters.h"
+#include "menuFunctions.h"
 
 #include "basicFunctions.h"
-
-
-static LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
-static Encoder encoder(RE_CLK, RE_DT);
 
 
 /**
@@ -42,8 +36,7 @@ uint8_t initArduino(){
 
     //TCS.begin();                      //initiate TCS3200 color sensor
 
-    lcd.begin(LCD_COLS, LCD_ROWS);
-    createCustomLCDChars();
+    initMenu();
 
     return 0;
 }
@@ -86,77 +79,5 @@ uint8_t clearInput(){
 
 	while(Serial.read() != -1);
 
-  return 0;
-}
-
-
-uint8_t createCustomLCDChars(){
-
-  lcd.createChar(arrowLeft, arrowLeftChar);
-
-  return 0;
-}
-
-
-uint8_t lcdSelection(const char** menuItems, uint8_t &selectedIndex){
-
-  //static uint8_t menuItemNumber = menuItems.itemNumber;
-  static uint8_t menuItemNumber = 3;
-  static int32_t prevEncoderPos;
-  int32_t encoderPos = encoder.read() / 4;
-  Serial.print(encoderPos);
-  Serial.print("\t");
-
-  uint8_t firstLineIndex;
-  static uint8_t cursorPosition = 0;
-  Serial.print(prevEncoderPos);
-  Serial.print("\t");
-  static int8_t direction = encoderPos - prevEncoderPos;
-  if(((cursorPosition == 0) && (direction > 0)) || ((cursorPosition == 1) && (direction < 0))){
-    cursorPosition ^= 1;
-  }
-
-  
-  
-  Serial.print(direction);
-  Serial.print("\t");
-  Serial.print(cursorPosition);
-  Serial.print("\t");
-  
-
-
-  if(encoderPos > (menuItemNumber - 2)) firstLineIndex = menuItemNumber - 2;
-  else if (encoderPos < 0) firstLineIndex = 0;
-  else firstLineIndex = encoderPos;
-
-  //if(encoderPos > (menuItemNumber - 1)) encoder.write((menuItemNumber - 1));
-  //else if (encoderPos < 0) encoder.write(0);
-  
-  /*Serial.print(menuItems.itemNames[selectedIndex]);
-  Serial.print("\t");
-  Serial.print(menuItems.itemNames[selectedIndex + 1]);
-  Serial.print("\t");*/
-  
-  
-  /*lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print(menuItems.itemNames[selectedIndex]);
-  lcd.setCursor(0,1);
-  lcd.print(menuItems.itemNames[selectedIndex + 1]);*/
-
-  if(encoderPos != prevEncoderPos){
-    prevEncoderPos = encoderPos;
-    Serial.print("REFRESH");
-
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print(menuItems[firstLineIndex]);
-    lcd.setCursor(0,1);
-    lcd.print(menuItems[firstLineIndex + 1]);
-
-    lcd.setCursor(15, 0);
-    lcd.write((byte) arrowLeft);
-  }
-  Serial.print("\r\n");
   return 0;
 }
