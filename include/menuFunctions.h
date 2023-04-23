@@ -33,12 +33,24 @@ static const char* gameSettingsMenuItemNames[] = {
 };
 
 
+static MenuProperties* menus[] = {
+    &mainMenuProperties,
+    &gameSettingsMenuProperties
+};
+enum menuIndex_t{
+    MENU_MAIN,
+    MENU_GAMESETTINGS
+};
+
+
 uint8_t lcdPrint(const char* text);
 
 uint8_t createCustomLCDChars();
 
-uint8_t resetMenuProperties(MenuProperties &menuProperties, uint8_t itemNumber);
+uint8_t resetMenuProperties(MenuProperties* menuProperties, uint8_t itemNumber);
 
-uint8_t lcdScrollMenu(MenuProperties &menuProperties, const char** menuItemNames);
+uint8_t resetEncoder();
+
+uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames);
 
 #endif

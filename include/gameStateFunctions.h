@@ -2,6 +2,7 @@
 #define GAMESTATE_FUNCTIONS
 
 #include <stdint.h>
+#include "menuFunctions.h"
 
 
 /**
@@ -36,13 +37,21 @@ struct FsmProperties{
 };
 
 
-static FsmProperties FSM;
+static FsmProperties fsm;
 
 
-uint8_t gameStateFSM();
+uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus);
 
-uint8_t mainMenu();
+uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu);
 
-uint8_t resetFSM();
+uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettingsMenu);
+
+uint8_t cpuTurnStateFunction(FsmProperties* FSM);
+
+uint8_t playerTurnStateFunction(FsmProperties* FSM);
+
+uint8_t diceRollStateFunction(FsmProperties* FSM);
+
+uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus);
 
 #endif

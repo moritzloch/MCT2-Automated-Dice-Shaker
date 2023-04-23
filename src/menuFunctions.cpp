@@ -54,46 +54,52 @@ uint8_t createCustomLCDChars(){
 }
 
 
-uint8_t resetMenuProperties(MenuProperties &menuProperties, uint8_t itemNumber){
-  menuProperties.firstFrame = true;
-  menuProperties.cursorPos = 0;
-  menuProperties.itemNumber = itemNumber;
-  menuProperties.topIndex = 0;
-  menuProperties.selectedIndex = 0;
+uint8_t resetMenuProperties(MenuProperties* menuProperties, uint8_t itemNumber){
+  menuProperties->firstFrame = true;
+  menuProperties->cursorPos = 0;
+  menuProperties->itemNumber = itemNumber;
+  menuProperties->topIndex = 0;
+  menuProperties->selectedIndex = 0;
 
   return 0;
 }
 
 
-uint8_t lcdScrollMenu(MenuProperties &menuProperties, const char** menuItemNames){
+uint8_t resetEncoder(){
+  encoder.write(0);
+  return 0;
+}
+
+
+uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames){
 
   int8_t encoderDirection = encoder.read() / 4;
 
-  if(((menuProperties.cursorPos == 0) && (encoderDirection > 0)) || ((menuProperties.cursorPos == 1) && (encoderDirection < 0))){
-    menuProperties.cursorPos ^= 1;
+  if(((menuProperties->cursorPos == 0) && (encoderDirection > 0)) || ((menuProperties->cursorPos == 1) && (encoderDirection < 0))){
+    menuProperties->cursorPos ^= 1;
   }
-  else if((menuProperties.cursorPos == 0) && (encoderDirection < 0)){
-    menuProperties.topIndex--;
-    if(menuProperties.topIndex < 0) menuProperties.topIndex = 0;
+  else if((menuProperties->cursorPos == 0) && (encoderDirection < 0)){
+    menuProperties->topIndex--;
+    if(menuProperties->topIndex < 0) menuProperties->topIndex = 0;
   }
-  else if((menuProperties.cursorPos == 1) && (encoderDirection > 0)){
-    menuProperties.topIndex++;
-    if(menuProperties.topIndex > (menuProperties.itemNumber - 2)) menuProperties.topIndex = (menuProperties.itemNumber - 2);
+  else if((menuProperties->cursorPos == 1) && (encoderDirection > 0)){
+    menuProperties->topIndex++;
+    if(menuProperties->topIndex > (menuProperties->itemNumber - 2)) menuProperties->topIndex = (menuProperties->itemNumber - 2);
   }
 
-  if((encoderDirection != 0) || (menuProperties.firstFrame)){
-    if(menuProperties.firstFrame) menuProperties.firstFrame = false;
+  if((encoderDirection != 0) || (menuProperties->firstFrame)){
+    if(menuProperties->firstFrame) menuProperties->firstFrame = false;
     encoder.write(0);
     lcd.clear();
-    lcd.setCursor(15, menuProperties.cursorPos);
+    lcd.setCursor(15, menuProperties->cursorPos);
     lcd.write((byte) arrowLeft);
     lcd.setCursor(0,0);
-    lcd.print(menuItemNames[menuProperties.topIndex]);
+    lcd.print(menuItemNames[menuProperties->topIndex]);
     lcd.setCursor(0,1);
-    lcd.print(menuItemNames[menuProperties.topIndex + 1]);
+    lcd.print(menuItemNames[menuProperties->topIndex + 1]);
   }
 
-  menuProperties.selectedIndex = menuProperties.topIndex + menuProperties.cursorPos;
+  menuProperties->selectedIndex = menuProperties->topIndex + menuProperties->cursorPos;
 
   return 0;
 }

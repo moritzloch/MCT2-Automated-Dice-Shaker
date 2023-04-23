@@ -21,80 +21,30 @@
 #include "gameStateFunctions.h"
 
 
-volatile bool encoderInterrupt = false;
-volatile bool resetInterrupt = false;
-
 void setup(){
 
   initArduino();
-  resetMenuProperties(mainMenuProperties, 3);
-  resetMenuProperties(gameSettingsMenuProperties, 4);
+  resetFSM(&fsm, menus);
 
 }
 
 void loop(){
 
   if(encoderInterrupt){
-    FSM.stateTransition = true;
+    (&fsm)->stateTransition = true;
+    resetEncoder();
     delay(200);
     encoderInterrupt = false;
   }
+
   if(resetInterrupt){
-    resetMenuProperties(mainMenuProperties, 3);
-    resetMenuProperties(gameSettingsMenuProperties, 4);
-    FSM.currentState = ST_MENU;
-    FSM.nextState = ST_MENU;
-    FSM.stateTransition = false;
+    resetFSM(&fsm, menus);
+    resetEncoder();
     delay(200);
     resetInterrupt = false;
   }
 
-  switch(FSM.currentState){
-
-        case ST_MENU:
-            lcdScrollMenu(mainMenuProperties, mainMenuItemNames);
-            if(FSM.stateTransition){
-                FSM.gameMode = (gameMode_t) mainMenuProperties.selectedIndex;
-                if(FSM.gameMode == GM_MAEXLE) FSM.nextState = ST_GAMESETTINGS;
-                else if(FSM.gameMode == GM_DICEROLL) FSM.nextState = ST_DICEROLL;
-                else FSM.nextState = ST_MENU;
-                FSM.stateTransition = false;
-            }
-            break;
-
-        case ST_GAMESETTINGS:
-            lcdScrollMenu(gameSettingsMenuProperties, gameSettingsMenuItemNames);
-            if(FSM.stateTransition){
-                if(gameSettingsMenuProperties.selectedIndex == 0){
-                  randomSeed(analogRead(0));
-                  FSM.nextState = (state_t) random(2, 4);
-                }
-                FSM.stateTransition = false;
-            }
-            break;
-
-        case ST_CPUTURN:
-            lcdPrint("CPU");
-            if(FSM.stateTransition){
-              FSM.nextState = ST_PLAYERTURN;
-              FSM.stateTransition = false;
-            }
-            break;
-
-        case ST_PLAYERTURN:
-            lcdPrint("PLAYER");
-            if(FSM.stateTransition){
-              FSM.nextState = ST_CPUTURN;
-              FSM.stateTransition = false;
-            }
-            break;
-
-        case ST_DICEROLL:
-            lcdPrint("Wuerfeln");
-            break;
-    }
-
-    FSM.currentState = FSM.nextState;
+  gameStateFSM(&fsm, menus);
 
 
   /*Serial.print(mainMenuProperties.cursorPos);
