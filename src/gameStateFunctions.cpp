@@ -12,7 +12,7 @@
 #include <Arduino.h>
 
 #include "basicFunctions.h"
-#include"menuFunctions.h"
+#include "menuFunctions.h"
 
 #include "gameStateFunctions.h"
 
@@ -131,6 +131,8 @@ uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
     FSM->currentState = ST_MENU;
     FSM->nextState = ST_MENU;
     FSM->stateTransition = false;
+    FSM->numberOfLives = 3;
+    FSM->numberOfPlayers = 2;
 
     return 0;
 }

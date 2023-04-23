@@ -34,10 +34,17 @@ struct FsmProperties{
     state_t currentState = ST_MENU;
     state_t nextState = ST_MENU;
     gameMode_t gameMode;
+    uint8_t numberOfLives;
+    uint8_t numberOfPlayers;
+    //uint8_t numberOfDice;
 };
-
-
 static FsmProperties fsm;
+
+
+struct PlayerProperties{
+    uint8_t lifeCount;  
+};
+static PlayerProperties* players[9];
 
 
 uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus);
