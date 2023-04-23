@@ -38,6 +38,12 @@ uint8_t initArduino(){
 
     initMenu();
 
+    pinMode(RE_SW, INPUT_PULLUP);
+    pinMode(RESET, INPUT_PULLUP);
+
+    attachInterrupt(digitalPinToInterrupt(RE_SW), encoderPressed, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(RESET), resetPressed, CHANGE);
+
     return 0;
 }
 

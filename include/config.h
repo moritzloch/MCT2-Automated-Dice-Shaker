@@ -41,5 +41,7 @@
 #define RE_SW   21
 #define RE_DT   20
 #define RE_CLK  19
+//Reset pin
+#define RESET   18
 
 #endif

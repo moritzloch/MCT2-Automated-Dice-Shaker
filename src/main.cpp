@@ -18,17 +18,60 @@
 #include "tcsFunctions.h"
 #include "basicFunctions.h"
 #include "menuFunctions.h"
+#include "gameStateFunctions.h"
 
 
 void setup(){
 
   initArduino();
-  resetMenuProperties(mainMenuProperties, 3);
+  resetFSM(&fsm, menus);
 
 }
 
 void loop(){
 
-  lcdScrollMenu(mainMenuProperties, mainMenuItemNames);
+  if(encoderInterrupt){
+    (&fsm)->stateTransition = true;
+    resetEncoder();
+    delay(200);
+    encoderInterrupt = false;
+  }
+
+  if(resetInterrupt){
+    resetFSM(&fsm, menus);
+    resetEncoder();
+    delay(200);
+    resetInterrupt = false;
+  }
+
+  gameStateFSM(&fsm, menus);
+
+
+  /*Serial.print(mainMenuProperties.cursorPos);
+  Serial.print("\t");
+  Serial.print(mainMenuProperties.topIndex);
+  Serial.print("\t");
+  Serial.print(mainMenuProperties.itemNumber);
+  Serial.print("\t");
+  Serial.print(mainMenuProperties.selectedIndex);
+  Serial.print("\t");
+  Serial.print(FSM.currentState);
+  Serial.print("\t");
+  Serial.print(FSM.nextState);
+  Serial.print("\t");
+  Serial.print(FSM.stateTransition);
+  Serial.print("\t");
+  Serial.print(FSM.gameMode);
+  Serial.print("\t");
+  Serial.print("\r\n");*/
   
+}
+
+
+void encoderPressed(){
+  encoderInterrupt = true;
+}
+
+void resetPressed(){
+  resetInterrupt = true;
 }
