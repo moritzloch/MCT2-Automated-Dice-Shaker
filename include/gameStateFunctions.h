@@ -13,6 +13,7 @@ enum state_t{
     ST_MENU,
     ST_GAMESETTINGS,
     ST_CPUTURN,
+    ST_CPUDICEROLL,
     ST_PLAYERTURN,
     ST_DICEROLL
 };
@@ -22,6 +23,11 @@ enum gameMode_t{
     GM_MAEXLE,
     GM_DICEROLL,
     GM_SETTINGS
+};
+
+
+struct PlayerProperties{
+    uint8_t lifeCount;  
 };
 
 
@@ -35,17 +41,17 @@ struct FsmProperties{
     state_t currentState = ST_MENU;
     state_t nextState = ST_MENU;
     gameMode_t gameMode;
-    uint8_t numberOfLives;
-    uint8_t numberOfPlayers;
+    uint8_t numberOfLives = 3;
+    uint8_t numberOfPlayers = 2;
     //uint8_t numberOfDice;
+    PlayerProperties* players[9];
+    uint8_t currentPlayer;
+    uint8_t prevDiceRoll;
+    uint8_t actualDiceRoll;
+    uint8_t announcedDiceRoll;
 };
 static FsmProperties fsm;
 
-
-struct PlayerProperties{
-    uint8_t lifeCount;  
-};
-static PlayerProperties* players[9];
 
 
 uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus);
@@ -55,6 +61,8 @@ uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu);
 uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettingsMenu);
 
 uint8_t cpuTurnStateFunction(FsmProperties* FSM);
+
+uint8_t cpuDiceRollStateFunction(FsmProperties* FSM);
 
 uint8_t playerTurnStateFunction(FsmProperties* FSM);
 

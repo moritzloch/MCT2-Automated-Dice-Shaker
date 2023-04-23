@@ -38,6 +38,10 @@ uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
         case ST_CPUTURN:
             cpuTurnStateFunction(FSM);
             break;
+        
+        case ST_CPUDICEROLL:
+            cpuDiceRollStateFunction(FSM);
+            break;
 
         case ST_PLAYERTURN:
             playerTurnStateFunction(FSM);
@@ -74,7 +78,9 @@ uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettin
     if(FSM->stateTransition){
         if(gameSettingsMenu->selectedIndex == 0){
             randomSeed(analogRead(0));
-            FSM->nextState = (state_t) random(2, 4);
+            FSM->currentPlayer = (state_t) random(0, FSM->numberOfPlayers + 1);
+            if(FSM->currentPlayer == 0) FSM->nextState = ST_CPUTURN;
+            else FSM->nextState = ST_PLAYERTURN;
         }
         FSM->stateTransition = false;
     }
@@ -87,10 +93,43 @@ uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettin
 uint8_t cpuTurnStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
-        FSM->nextState = ST_PLAYERTURN;
+        FSM->nextState = ST_CPUDICEROLL;
         FSM->stateTransition = false;
     }
-    else lcdPrint("CPU");
+    else lcdPrint("Die CPU ist", "an der Reihe", &FSM->firstFrame);
+
+    return 0;
+}
+
+uint8_t cpuDiceRollStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM-> currentPlayer++;
+        if(FSM->currentPlayer > FSM->numberOfPlayers) FSM->currentPlayer = 0;
+        if(FSM->currentPlayer == 0) FSM->nextState = ST_CPUTURN;
+        else FSM->nextState = ST_PLAYERTURN;
+        FSM->stateTransition = false;
+    }
+    else{
+        if(FSM->firstFrame){
+            getRandomDiceRoll(&FSM->actualDiceRoll);
+            //Serial.print(FSM->prevDiceRoll);
+            Serial.print(FSM->actualDiceRoll);
+            if(checkIfGreater(FSM->actualDiceRoll, FSM->prevDiceRoll)){
+                lcdPrintDiceNumber(FSM->actualDiceRoll, &FSM->firstFrame);
+                Serial.println("Wahrheit");
+            }
+            else{
+                while(!checkIfGreater(FSM->announcedDiceRoll, FSM->prevDiceRoll)){
+                    getRandomDiceRoll(&FSM->announcedDiceRoll);
+                    Serial.print(FSM->announcedDiceRoll);
+                }
+                lcdPrintDiceNumber(FSM->announcedDiceRoll, &FSM->firstFrame);
+                Serial.println("Lüge");
+                FSM->announcedDiceRoll = 0;
+            }
+        }
+    }
 
     return 0;
 }
@@ -101,10 +140,14 @@ uint8_t playerTurnStateFunction(FsmProperties* FSM){
     static int8_t testVal = 2;
 
     if(FSM->stateTransition){
-        FSM->nextState = ST_CPUTURN;
+        FSM-> currentPlayer++;
+        if(FSM->currentPlayer > FSM->numberOfPlayers) FSM->currentPlayer = 0;
+        if(FSM->currentPlayer == 0) FSM->nextState = ST_CPUTURN;
+        else FSM->nextState = ST_PLAYERTURN;
         FSM->stateTransition = false;
     }
-    else lcdValueMenu("First Digit", &FSM->firstFrame, 0, 5, testVal);
+    //else lcdValueMenu("First Digit", &FSM->firstFrame, 0, 5, testVal);
+    else lcdPrintPlayerNumber("ist", "an der Reihe", FSM->currentPlayer, &FSM->firstFrame);
 
     return 0;
 }
@@ -116,7 +159,7 @@ uint8_t diceRollStateFunction(FsmProperties* FSM){
         FSM->nextState = ST_DICEROLL;
         FSM->stateTransition = false;
     }
-    else lcdPrint("Wuerfeln");
+    else lcdPrint("Wuerfeln", "", &FSM->firstFrame);
 
     return 0;
 }
@@ -131,6 +174,9 @@ uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
     FSM->stateTransition = false;
     FSM->numberOfLives = 3;
     FSM->numberOfPlayers = 2;
+    FSM->prevDiceRoll = 22;
+    FSM->actualDiceRoll = 0;
+    FSM->announcedDiceRoll = 0;
 
     return 0;
 }

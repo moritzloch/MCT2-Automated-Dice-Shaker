@@ -47,7 +47,6 @@ void loop(){
 
   gameStateFSM(&fsm, menus);
 
-
   /*Serial.print(mainMenuProperties.cursorPos);
   Serial.print("\t");
   Serial.print(mainMenuProperties.topIndex);

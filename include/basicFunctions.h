@@ -20,4 +20,8 @@ void encoderPressed();
 
 void resetPressed();
 
+uint8_t getRandomDiceRoll(uint8_t* diceRoll);
+
+bool checkIfGreater(uint8_t value, uint8_t compValue);
+
 #endif

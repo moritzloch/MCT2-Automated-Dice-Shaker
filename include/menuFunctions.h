@@ -42,7 +42,11 @@ enum menuIndex_t{
 };
 
 
-uint8_t lcdPrint(const char* text);
+uint8_t lcdPrint(const char* firstLineText, const char* secondLineText, bool* firstFrame);
+
+uint8_t lcdPrintPlayerNumber(const char* firstLineText, const char* secondLineText, uint8_t playerNumber, bool* firstFrame);
+
+uint8_t lcdPrintDiceNumber(uint8_t diceNumber, bool* firstFrame);
 
 uint8_t createCustomLCDChars();
 

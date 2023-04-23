@@ -87,3 +87,31 @@ uint8_t clearInput(){
 
   return 0;
 }
+
+
+uint8_t getRandomDiceRoll(uint8_t* diceRoll){
+
+  randomSeed(analogRead(0));
+  uint8_t digit1 = random(1, 7);
+  delay(10);
+  randomSeed(analogRead(0));
+  uint8_t digit2 = random(1, 7);
+
+  if(digit1 > digit2) *diceRoll = (10 * digit1) + digit2;
+  else *diceRoll = (10 * digit2) + digit1;
+
+  return 0;
+}
+
+
+bool checkIfGreater(uint8_t value, uint8_t compValue){
+
+  bool retValue;
+
+  if(value == 21) retValue = true;
+  else if(((value % 11) == 0) && (!((compValue % 11) == 0))) retValue = true;
+  else if((!(value % 11) == 0) && (((compValue % 11) == 0))) retValue = false;
+  else retValue = (value > compValue);
+
+  return retValue;
+}

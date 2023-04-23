@@ -35,12 +35,50 @@ uint8_t initMenu(){
 }
 
 
-uint8_t lcdPrint(const char* text){
+uint8_t lcdPrint(const char* firstLineText, const char* secondLineText, bool* firstFrame){
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(text);
-  delay(100);
+  if(*firstFrame){
+    *firstFrame = false;
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(firstLineText);
+    lcd.setCursor(0, 1);
+    lcd.print(secondLineText);
+  }
+
+  return 0;
+}
+
+uint8_t lcdPrintPlayerNumber(const char* firstLineText, const char* secondLineText, uint8_t playerNumber, bool* firstFrame){
+
+  if(*firstFrame){
+    *firstFrame = false;
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Spieler ");
+    lcd.setCursor(8, 0);
+    lcd.print(playerNumber);
+    lcd.setCursor(9, 0);
+    lcd.print(" ");
+    lcd.setCursor(10, 0);
+    lcd.print(firstLineText);
+    lcd.setCursor(0, 1);
+    lcd.print(secondLineText);
+  }
+
+  return 0;
+}
+
+uint8_t lcdPrintDiceNumber(uint8_t diceNumber, bool* firstFrame){
+
+  if(*firstFrame){
+    *firstFrame = false;
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Meine Zahl:");
+    lcd.setCursor(0, 1);
+    lcd.print(diceNumber);
+  }
 
   return 0;
 }
