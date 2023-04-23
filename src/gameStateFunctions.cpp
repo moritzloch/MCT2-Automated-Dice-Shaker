@@ -24,7 +24,7 @@
  * @return uint8_t 0
  */
 uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
-
+    
     switch(FSM->currentState){
 
         case ST_MENU:
@@ -56,8 +56,6 @@ uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
 
 uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu){
 
-    lcdScrollMenu(mainMenu, mainMenuItemNames);
-
     if(FSM->stateTransition){
         FSM->gameMode = (gameMode_t) mainMenu->selectedIndex;
         if(FSM->gameMode == GM_MAEXLE) FSM->nextState = ST_GAMESETTINGS;
@@ -65,14 +63,13 @@ uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu){
         else FSM->nextState = ST_MENU;
         FSM->stateTransition = false;
     }
+    else lcdScrollMenu(mainMenu, mainMenuItemNames, &FSM->firstFrame);
 
     return 0;
 }
 
 
 uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettingsMenu){
-
-    lcdScrollMenu(gameSettingsMenu, gameSettingsMenuItemNames);
 
     if(FSM->stateTransition){
         if(gameSettingsMenu->selectedIndex == 0){
@@ -81,6 +78,7 @@ uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettin
         }
         FSM->stateTransition = false;
     }
+    else lcdScrollMenu(gameSettingsMenu, gameSettingsMenuItemNames, &FSM->firstFrame);
 
     return 0;
 }
@@ -88,12 +86,11 @@ uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettin
 
 uint8_t cpuTurnStateFunction(FsmProperties* FSM){
 
-    lcdPrint("CPU");
-
     if(FSM->stateTransition){
         FSM->nextState = ST_PLAYERTURN;
         FSM->stateTransition = false;
     }
+    else lcdPrint("CPU");
 
     return 0;
 }
@@ -101,12 +98,13 @@ uint8_t cpuTurnStateFunction(FsmProperties* FSM){
 
 uint8_t playerTurnStateFunction(FsmProperties* FSM){
 
-    lcdPrint("PLAYER");
+    static int8_t testVal = 2;
 
     if(FSM->stateTransition){
         FSM->nextState = ST_CPUTURN;
         FSM->stateTransition = false;
     }
+    else lcdValueMenu("First Digit", &FSM->firstFrame, 0, 5, testVal);
 
     return 0;
 }
@@ -114,12 +112,11 @@ uint8_t playerTurnStateFunction(FsmProperties* FSM){
 
 uint8_t diceRollStateFunction(FsmProperties* FSM){
 
-    lcdPrint("Wuerfeln");
-
     if(FSM->stateTransition){
         FSM->nextState = ST_DICEROLL;
         FSM->stateTransition = false;
     }
+    else lcdPrint("Wuerfeln");
 
     return 0;
 }
@@ -128,6 +125,7 @@ uint8_t diceRollStateFunction(FsmProperties* FSM){
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
     resetMenuProperties(menus[MENU_MAIN], 3);
     resetMenuProperties(menus[MENU_GAMESETTINGS], 4);
+    FSM->firstFrame = true;
     FSM->currentState = ST_MENU;
     FSM->nextState = ST_MENU;
     FSM->stateTransition = false;

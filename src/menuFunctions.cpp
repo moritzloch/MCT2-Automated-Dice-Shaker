@@ -55,7 +55,6 @@ uint8_t createCustomLCDChars(){
 
 
 uint8_t resetMenuProperties(MenuProperties* menuProperties, uint8_t itemNumber){
-  menuProperties->firstFrame = true;
   menuProperties->cursorPos = 0;
   menuProperties->itemNumber = itemNumber;
   menuProperties->topIndex = 0;
@@ -71,7 +70,7 @@ uint8_t resetEncoder(){
 }
 
 
-uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames){
+uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames, bool* firstFrame){
 
   int8_t encoderDirection = encoder.read() / 4;
 
@@ -87,8 +86,8 @@ uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames
     if(menuProperties->topIndex > (menuProperties->itemNumber - 2)) menuProperties->topIndex = (menuProperties->itemNumber - 2);
   }
 
-  if((encoderDirection != 0) || (menuProperties->firstFrame)){
-    if(menuProperties->firstFrame) menuProperties->firstFrame = false;
+  if((encoderDirection != 0) || (*firstFrame)){
+    if(*firstFrame) *firstFrame = false;
     encoder.write(0);
     lcd.clear();
     lcd.setCursor(15, menuProperties->cursorPos);
@@ -100,6 +99,32 @@ uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames
   }
 
   menuProperties->selectedIndex = menuProperties->topIndex + menuProperties->cursorPos;
+
+  return 0;
+}
+
+
+uint8_t lcdValueMenu(const char* valueName, bool* firstFrame,  uint8_t minValue, uint8_t maxValue, int8_t &selectedValue){
+
+  int8_t encoderDirection = encoder.read() / 4;
+
+  if(encoderDirection > 0) selectedValue++;
+  else if(encoderDirection < 0) selectedValue --;
+
+  if(selectedValue < minValue) selectedValue = minValue;
+  else if(selectedValue > maxValue) selectedValue = maxValue;
+
+  if((encoderDirection != 0) || (*firstFrame)){
+    if(*firstFrame) *firstFrame = false;
+    encoder.write(0);
+    lcd.clear();
+    lcd.setCursor(15, 1);
+    lcd.write((byte) arrowLeft);
+    lcd.setCursor(0,0);
+    lcd.print(valueName);
+    lcd.setCursor(0,1);
+    lcd.print(selectedValue);
+  }
 
   return 0;
 }

@@ -32,6 +32,7 @@ void loop(){
 
   if(encoderInterrupt){
     (&fsm)->stateTransition = true;
+    (&fsm)->firstFrame = true;
     resetEncoder();
     delay(200);
     encoderInterrupt = false;
@@ -62,8 +63,9 @@ void loop(){
   Serial.print(FSM.stateTransition);
   Serial.print("\t");
   Serial.print(FSM.gameMode);
-  Serial.print("\t");
-  Serial.print("\r\n");*/
+  Serial.print("\t");*/
+  //Serial.print(fsm.firstFrame);
+  //Serial.print("\r\n");
   
 }
 

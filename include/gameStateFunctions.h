@@ -31,6 +31,7 @@ enum gameMode_t{
  */
 struct FsmProperties{
     bool stateTransition = false;
+    bool firstFrame = true;
     state_t currentState = ST_MENU;
     state_t nextState = ST_MENU;
     gameMode_t gameMode;
