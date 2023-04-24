@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <Arduino.h>
 
+#include "config.h"
 #include "basicFunctions.h"
 #include "menuFunctions.h"
 
@@ -56,15 +57,27 @@ uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
             break;
 
         case ST_PLAYERLIEDETECTION:
-            playerLieDetectionStateFunction(FSM);
+            playerLieDetectionStateFunction(FSM, menus[MENU_LIEDETECTION]);
             break;
 
         case ST_BEFORELIEDETECTION:
             beforeLieDetectionStateFunction(FSM);
             break;
+
+        case ST_CHECKFORLIE1:
+            checkForLieStateFunction1(FSM);
+            break;
+
+        case ST_CHECKFORLIE2:
+            checkForLieStateFunction2(FSM);
+            break;
         
         case ST_ENDOFTURN:
             endOfTurnStateFunction(FSM);
+            break;
+
+        case ST_ENDOFGAME:
+            endOfGameStateFunction(FSM);
             break;
 
         case ST_DICEROLL:
@@ -131,17 +144,17 @@ uint8_t cpuDiceRollStateFunction(FsmProperties* FSM){
     }
     else{
         if(FSM->firstFrame){
-            getRandomDiceRoll(&FSM->actualDiceRoll);
-            if(checkIfGreater(FSM->actualDiceRoll, FSM->prevDiceRoll)){
-                lcdPrintDiceNumber(FSM->actualDiceRoll, &FSM->firstFrame);
+            getRandomDiceRoll(&FSM->diceRoll);
+            if(checkIfGreater(FSM->diceRoll, FSM->prevDiceRoll)){
+                FSM->trueNumberAnnounced = true;
             }
             else{
-                while(!checkIfGreater(FSM->announcedDiceRoll, FSM->prevDiceRoll)){
-                    getRandomDiceRoll(&FSM->announcedDiceRoll);
+                while(!checkIfGreater(FSM->diceRoll, FSM->prevDiceRoll)){
+                    getRandomDiceRoll(&FSM->diceRoll);
                 }
-                lcdPrintDiceNumber(FSM->announcedDiceRoll, &FSM->firstFrame);
-                //FSM->announcedDiceRoll = 0;
+                FSM->trueNumberAnnounced = false;
             }
+            lcdPrintDiceNumber(FSM->diceRoll, &FSM->firstFrame);
         }
     }
 
@@ -187,13 +200,17 @@ uint8_t playerDiceRollStateFunction(FsmProperties* FSM){
 }
 
 
-uint8_t playerLieDetectionStateFunction(FsmProperties* FSM){
+uint8_t playerLieDetectionStateFunction(FsmProperties* FSM, MenuProperties* lieDetectionMenu){
 
     if(FSM->stateTransition){
-        FSM->nextState = ST_ENDOFTURN;
+        if(lieDetectionMenu->selectedIndex == 0){    //trust previous player
+            FSM->nextState = ST_ENDOFTURN;
+        }
+        else FSM->nextState = ST_CHECKFORLIE1;
+        resetMenuProperties(menus[MENU_LIEDETECTION], 2);
         FSM->stateTransition = false;
     }
-    else lcdPrint("Player Lie", "Detection", &FSM->firstFrame);
+    else lcdScrollMenu(lieDetectionMenu, lieDetectionMenuItemNames, &FSM->firstFrame);
 
     return 0;
 }
@@ -215,15 +232,73 @@ uint8_t beforeLieDetectionStateFunction(FsmProperties* FSM){
 }
 
 
+uint8_t checkForLieStateFunction1(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_CHECKFORLIE2;
+        FSM->stateTransition = false;
+    }
+    else{
+        if(FSM->trueNumberAnnounced) lcdPrint("Falsch!", "", &FSM->firstFrame);
+        else lcdPrint("Richtig!", "", &FSM->firstFrame);
+    }
+
+    return 0;
+}
+
+
+uint8_t checkForLieStateFunction2(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->diceRoll = 0;
+        FSM->nextState = ST_ENDOFTURN;
+        FSM->stateTransition = false;
+    }
+    else{
+        if(FSM->trueNumberAnnounced){
+            FSM->lifeCount[FSM->nextPlayer]--;
+            if(FSM->nextPlayer == 0) lcdPrint("Die CPU", "verliert Leben", &FSM->firstFrame);
+            else lcdPrintPlayerNumber("", "verliert Leben", FSM->nextPlayer, &FSM->firstFrame);
+        } 
+        else{
+            FSM->lifeCount[FSM->currentPlayer]--;
+            if(FSM->currentPlayer == 0) lcdPrint("Die CPU", "verliert Leben", &FSM->firstFrame);
+            else lcdPrintPlayerNumber("", "verliert Leben", FSM->nextPlayer, &FSM->firstFrame);
+        }
+    }
+
+    return 0;
+}
+
+
 uint8_t endOfTurnStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
-        resetTurn(FSM);
-        if(FSM->currentPlayer == 0) FSM->nextState = ST_CPUTURN;
-        else FSM->nextState = ST_PLAYERTURN;
+        checkForWinner(FSM);
+        if(FSM->winningPlayer == -1){
+            resetTurn(FSM);
+            if(FSM->currentPlayer == 0) FSM->nextState = ST_CPUTURN;
+            else FSM->nextState = ST_PLAYERTURN;
+        }
+        else FSM->nextPlayer = ST_ENDOFGAME;
         FSM->stateTransition = false;
     }
     else lcdPrint("End of", "Turn", &FSM->firstFrame);
+
+    return 0;
+}
+
+
+uint8_t endOfGameStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_MENU;
+        FSM->stateTransition = false;
+    }
+    else{
+        if(FSM->currentPlayer == 0) lcdPrint("Die CPU", "hat gewonnen", &FSM->firstFrame);
+        else lcdPrintPlayerNumber("", "hat gweonnen", FSM->winningPlayer, &FSM->firstFrame);
+    }
 
     return 0;
 }
@@ -242,17 +317,29 @@ uint8_t diceRollStateFunction(FsmProperties* FSM){
 
 
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
+
     resetMenuProperties(menus[MENU_MAIN], 3);
     resetMenuProperties(menus[MENU_GAMESETTINGS], 4);
+    resetMenuProperties(menus[MENU_LIEDETECTION], 2);
+
     FSM->firstFrame = true;
     FSM->currentState = ST_MENU;
     FSM->nextState = ST_MENU;
     FSM->stateTransition = false;
-    FSM->numberOfLives = 3;
-    FSM->numberOfPlayers = 2;
-    FSM->prevDiceRoll = 22;
-    FSM->actualDiceRoll = 0;
-    FSM->announcedDiceRoll = 0;
+    FSM->numberOfLives = STANDARDNUMBEROFLIVES;
+    FSM->numberOfPlayers = STANDARDNUMBEROFPLAYERS;
+    FSM->prevDiceRoll = 0;
+    FSM->diceRoll = 0;
+    FSM->winningPlayer = -1;
+
+    for(uint8_t i = 0; i < FSM->numberOfPlayers + 1; i++){
+        FSM->lifeCount[i] = FSM->numberOfLives;
+        Serial.print(FSM->lifeCount[i]);
+    }
+
+    for(uint8_t i = 0; i < FSM->numberOfPlayers + 1; i++){
+        Serial.print(FSM->lifeCount[i]);
+    }
 
     return 0;
 }
@@ -261,8 +348,39 @@ uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
 uint8_t resetTurn(FsmProperties* FSM){
 
     FSM->currentPlayer = FSM->nextPlayer;
+    while(!(FSM->lifeCount[FSM->currentPlayer] > 0)){
+        FSM->currentPlayer += 1;
+        if(FSM->currentPlayer > FSM->numberOfPlayers) FSM->currentPlayer = 0;
+        //Serial.print(FSM->currentPlayer);Serial.print(FSM->nextPlayer);Serial.println(FSM->players[FSM->currentPlayer]->lifeCount);
+    }
+
     FSM->nextPlayer = FSM->currentPlayer + 1;
     if(FSM->nextPlayer > FSM->numberOfPlayers) FSM->nextPlayer = 0;
+    while(!(FSM->lifeCount[FSM->nextPlayer] > 0)){
+        FSM->nextPlayer += 1;
+        if(FSM->nextPlayer > FSM->numberOfPlayers) FSM->nextPlayer = 0;
+    }
+    
+
+    FSM->prevDiceRoll = FSM->diceRoll;
+
+    return 0;
+}
+
+
+uint8_t checkForWinner(FsmProperties* FSM){
+
+    uint8_t playerWithRemainingLives = 0;
+    uint8_t winningPlayer;
+
+    for(uint8_t i = 0; i < FSM->numberOfPlayers; i++){
+        if(FSM->lifeCount[i] > 0){
+            playerWithRemainingLives++;
+            winningPlayer = i;
+        }
+    }
+
+    if(playerWithRemainingLives == 1) FSM->winningPlayer = winningPlayer;
 
     return 0;
 }

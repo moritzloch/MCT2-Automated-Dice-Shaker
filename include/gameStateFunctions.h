@@ -19,7 +19,10 @@ enum state_t{
     ST_PLAYERDICEROLL,
     ST_PLAYERLIEDETECTION,
     ST_BEFORELIEDETECTION,
+    ST_CHECKFORLIE1,
+    ST_CHECKFORLIE2,
     ST_ENDOFTURN,
+    ST_ENDOFGAME,
     ST_DICEROLL
 };
 
@@ -28,11 +31,6 @@ enum gameMode_t{
     GM_MAEXLE,
     GM_DICEROLL,
     GM_SETTINGS
-};
-
-
-struct PlayerProperties{
-    uint8_t lifeCount;  
 };
 
 
@@ -46,15 +44,16 @@ struct FsmProperties{
     state_t currentState = ST_MENU;
     state_t nextState = ST_MENU;
     gameMode_t gameMode;
-    uint8_t numberOfLives = 3;
-    uint8_t numberOfPlayers = 2;
+    uint8_t numberOfLives;
+    uint8_t numberOfPlayers;
     //uint8_t numberOfDice;
-    PlayerProperties* players[9];
+    uint8_t lifeCount[9];
     uint8_t currentPlayer;
     uint8_t nextPlayer;
     uint8_t prevDiceRoll;
-    uint8_t actualDiceRoll;
-    uint8_t announcedDiceRoll;
+    uint8_t diceRoll;
+    bool trueNumberAnnounced;
+    int8_t winningPlayer = -1;
 };
 static FsmProperties fsm;
 
@@ -76,16 +75,24 @@ uint8_t playerTurnStateFunction(FsmProperties* FSM);
 
 uint8_t playerDiceRollStateFunction(FsmProperties* FSM);
 
-uint8_t playerLieDetectionStateFunction(FsmProperties* FSM);
+uint8_t playerLieDetectionStateFunction(FsmProperties* FSM, MenuProperties* lieDetectionMenu);
 
 uint8_t beforeLieDetectionStateFunction(FsmProperties* FSM);
 
+uint8_t checkForLieStateFunction1(FsmProperties* FSM);
+
+uint8_t checkForLieStateFunction2(FsmProperties* FSM);
+
 uint8_t endOfTurnStateFunction(FsmProperties* FSM);
+
+uint8_t endOfGameStateFunction(FsmProperties* FSM);
 
 uint8_t diceRollStateFunction(FsmProperties* FSM);
 
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus);
 
 uint8_t resetTurn(FsmProperties* FSM);
+
+uint8_t checkForWinner(FsmProperties* FSM);
 
 #endif

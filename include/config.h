@@ -12,7 +12,9 @@
  */
 
 
-#define FREQ 100
+#define STANDARDNUMBEROFLIVES   3 
+#define STANDARDNUMBEROFPLAYERS 2
+
 
 #define LCD_COLS    16
 #define LCD_ROWS     2

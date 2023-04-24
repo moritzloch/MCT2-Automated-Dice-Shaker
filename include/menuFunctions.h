@@ -31,14 +31,23 @@ static const char* gameSettingsMenuItemNames[] = {
     "Anzahl Wuerfel"
 };
 
+static MenuProperties lieDetectionMenuProperties;
+
+static const char* lieDetectionMenuItemNames[] = {
+    "Wahrheit",
+    "Luege"
+};
+
 
 static MenuProperties* menus[] = {
     &mainMenuProperties,
-    &gameSettingsMenuProperties
+    &gameSettingsMenuProperties,
+    &lieDetectionMenuProperties
 };
 enum menuIndex_t{
     MENU_MAIN,
-    MENU_GAMESETTINGS
+    MENU_GAMESETTINGS,
+    MENU_LIEDETECTION
 };
 
 
