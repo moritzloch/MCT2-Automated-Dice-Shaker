@@ -14,7 +14,12 @@ enum state_t{
     ST_GAMESETTINGS,
     ST_CPUTURN,
     ST_CPUDICEROLL,
+    ST_CPULIEDETECTION,
     ST_PLAYERTURN,
+    ST_PLAYERDICEROLL,
+    ST_PLAYERLIEDETECTION,
+    ST_BEFORELIEDETECTION,
+    ST_ENDOFTURN,
     ST_DICEROLL
 };
 
@@ -46,6 +51,7 @@ struct FsmProperties{
     //uint8_t numberOfDice;
     PlayerProperties* players[9];
     uint8_t currentPlayer;
+    uint8_t nextPlayer;
     uint8_t prevDiceRoll;
     uint8_t actualDiceRoll;
     uint8_t announcedDiceRoll;
@@ -64,10 +70,22 @@ uint8_t cpuTurnStateFunction(FsmProperties* FSM);
 
 uint8_t cpuDiceRollStateFunction(FsmProperties* FSM);
 
+uint8_t cpuLieDetectionStateFunction(FsmProperties* FSM);
+
 uint8_t playerTurnStateFunction(FsmProperties* FSM);
+
+uint8_t playerDiceRollStateFunction(FsmProperties* FSM);
+
+uint8_t playerLieDetectionStateFunction(FsmProperties* FSM);
+
+uint8_t beforeLieDetectionStateFunction(FsmProperties* FSM);
+
+uint8_t endOfTurnStateFunction(FsmProperties* FSM);
 
 uint8_t diceRollStateFunction(FsmProperties* FSM);
 
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus);
+
+uint8_t resetTurn(FsmProperties* FSM);
 
 #endif

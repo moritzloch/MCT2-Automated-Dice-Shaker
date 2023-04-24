@@ -34,19 +34,22 @@ void loop(){
     (&fsm)->stateTransition = true;
     (&fsm)->firstFrame = true;
     resetEncoder();
-    delay(200);
+    delay(250);
     encoderInterrupt = false;
   }
 
   if(resetInterrupt){
     resetFSM(&fsm, menus);
     resetEncoder();
-    delay(200);
+    delay(250);
     resetInterrupt = false;
   }
 
   gameStateFSM(&fsm, menus);
 
+  /*Serial.print(fsm.currentPlayer);
+  Serial.print("\t");
+  Serial.print(fsm.nextPlayer);*/
   /*Serial.print(mainMenuProperties.cursorPos);
   Serial.print("\t");
   Serial.print(mainMenuProperties.topIndex);
@@ -64,7 +67,7 @@ void loop(){
   Serial.print(FSM.gameMode);
   Serial.print("\t");*/
   //Serial.print(fsm.firstFrame);
-  //Serial.print("\r\n");
+  Serial.print("\r\n");
   
 }
 
