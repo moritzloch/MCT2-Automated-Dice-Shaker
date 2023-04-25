@@ -18,9 +18,12 @@ enum state_t{
     ST_PLAYERTURN,
     ST_PLAYERDICEROLL,
     ST_PLAYERLIEDETECTION,
+    ST_PLAYERLIECONFIRMATION1,
+    ST_PLAYERLIECONFIRMATION2,
     ST_BEFORELIEDETECTION,
     ST_CHECKFORLIE1,
     ST_CHECKFORLIE2,
+    ST_CHECKFORLIE3,
     ST_ENDOFTURN,
     ST_ENDOFGAME,
     ST_DICEROLL
@@ -46,12 +49,12 @@ struct FsmProperties{
     gameMode_t gameMode;
     uint8_t numberOfLives;
     uint8_t numberOfPlayers;
-    //uint8_t numberOfDice;
     uint8_t lifeCount[9];
+    //uint8_t numberOfDice;
     uint8_t currentPlayer;
     uint8_t nextPlayer;
-    uint8_t prevDiceRoll;
-    uint8_t diceRoll;
+    int8_t prevDiceRollIndex;
+    int8_t diceRollIndex;
     bool trueNumberAnnounced;
     int8_t winningPlayer = -1;
 };
@@ -75,13 +78,19 @@ uint8_t playerTurnStateFunction(FsmProperties* FSM);
 
 uint8_t playerDiceRollStateFunction(FsmProperties* FSM);
 
+uint8_t beforeLieDetectionStateFunction(FsmProperties* FSM);
+
 uint8_t playerLieDetectionStateFunction(FsmProperties* FSM, MenuProperties* lieDetectionMenu);
 
-uint8_t beforeLieDetectionStateFunction(FsmProperties* FSM);
+uint8_t playerLieConfirmationStateFunction1(FsmProperties* FSM);
+
+uint8_t playerLieConfirmationStateFunction2(FsmProperties* FSM, MenuProperties* lieDetectionMenu);
 
 uint8_t checkForLieStateFunction1(FsmProperties* FSM);
 
 uint8_t checkForLieStateFunction2(FsmProperties* FSM);
+
+uint8_t checkForLieStateFunction3(FsmProperties* FSM);
 
 uint8_t endOfTurnStateFunction(FsmProperties* FSM);
 

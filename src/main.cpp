@@ -67,7 +67,7 @@ void loop(){
   Serial.print(FSM.gameMode);
   Serial.print("\t");*/
   //Serial.print(fsm.firstFrame);
-  Serial.print("\r\n");
+  //Serial.print("\r\n");
   
 }
 

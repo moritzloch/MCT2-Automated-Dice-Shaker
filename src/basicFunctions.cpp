@@ -89,7 +89,9 @@ uint8_t clearInput(){
 }
 
 
-uint8_t getRandomDiceRoll(uint8_t* diceRoll){
+uint8_t getRandomDiceRoll(int8_t* diceRollIndex){
+
+  uint8_t diceRoll;
 
   randomSeed(analogRead(0));
   uint8_t digit1 = random(1, 7);
@@ -97,13 +99,25 @@ uint8_t getRandomDiceRoll(uint8_t* diceRoll){
   randomSeed(analogRead(0));
   uint8_t digit2 = random(1, 7);
 
-  if(digit1 > digit2) *diceRoll = (10 * digit1) + digit2;
-  else *diceRoll = (10 * digit2) + digit1;
+  if(digit1 > digit2) diceRoll = (10 * digit1) + digit2;
+  else diceRoll = (10 * digit2) + digit1;
+
+  *diceRollIndex = valueToIndexLUT[diceRoll];
 
   return 0;
 }
 
 
+
+/**
+ * ! DEPRECATED !
+ * @brief 
+ * 
+ * @param value 
+ * @param compValue 
+ * @return true 
+ * @return false 
+ */
 bool checkIfGreater(uint8_t value, uint8_t compValue){
 
   bool retValue;
