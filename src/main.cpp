@@ -57,12 +57,12 @@ void loop(){
   Serial.print(mainMenuProperties.itemNumber);
   Serial.print("\t");
   Serial.print(mainMenuProperties.selectedIndex);
+  Serial.print("\t");*/
+  /*Serial.print(fsm.currentState);
   Serial.print("\t");
-  Serial.print(FSM.currentState);
-  Serial.print("\t");
-  Serial.print(FSM.nextState);
-  Serial.print("\t");
-  Serial.print(FSM.stateTransition);
+  Serial.print(fsm.nextState);
+  Serial.print("\t");*/
+  /*Serial.print(FSM.stateTransition);
   Serial.print("\t");
   Serial.print(FSM.gameMode);
   Serial.print("\t");*/

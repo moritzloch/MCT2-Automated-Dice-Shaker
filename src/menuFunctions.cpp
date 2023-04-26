@@ -70,15 +70,42 @@ uint8_t lcdPrintPlayerNumber(const char* firstLineText, const char* secondLineTe
   return 0;
 }
 
-uint8_t lcdPrintDiceNumber(uint8_t diceNumber, bool* firstFrame){
+uint8_t lcdPrintMaexleDiceNumber(uint8_t diceNumber, bool* firstFrame){
 
   if(*firstFrame){
     *firstFrame = false;
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Meine Zahl:");
+    lcd.print("CPU Zahl:");
     lcd.setCursor(0, 1);
     lcd.print(diceNumber);
+  }
+
+  return 0;
+}
+
+
+uint8_t lcdPrintCustomDiceNumber(uint8_t nrDice, uint8_t nrEyes, bool* firstFrame){
+
+  if(*firstFrame){
+    *firstFrame = false;
+
+    uint8_t diceRoll[nrDice];
+    getCustomDiceRoll(diceRoll, nrDice, nrEyes);
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Wuerfel:");
+    uint8_t cursorPos = 0;
+    for(uint8_t i = 0; i < nrDice; i++){
+      if(diceRoll[i] < 10) cursorPos++;
+
+      lcd.setCursor(cursorPos, 1);
+      lcd.print(diceRoll[i]);
+
+      if(diceRoll[i] < 10) cursorPos += 2;
+      else cursorPos += 3;
+    }
   }
 
   return 0;
@@ -105,12 +132,18 @@ uint8_t lcdPrintLives(uint8_t playerNumber, uint8_t lives, bool* firstFrame){
     }
 
     if(lives > 0){
-      lcd.setCursor(0, 1);
-      lcd.print("noch ");
-      lcd.setCursor(5, 1);
-      lcd.print(lives);
-      lcd.setCursor(6, 1);
-      lcd.print(" Leben");
+        lcd.setCursor(0, 1);
+        lcd.print("noch ");
+        lcd.setCursor(5, 1);
+        lcd.print(lives);
+      if(lives < 10){
+        lcd.setCursor(6, 1);
+        lcd.print(" Leben");
+      }
+      else{
+        lcd.setCursor(7, 1);
+        lcd.print(" Leben");
+      }
     }
     else{
       lcd.setCursor(0, 1);
@@ -185,11 +218,14 @@ uint8_t lcdValueMenu(const char* valueName, bool* firstFrame,  uint8_t minValue,
 
   int8_t encoderDirection = encoder.read() / 4;
 
-  if(encoderDirection > 0) selectedValue++;
-  else if(encoderDirection < 0) selectedValue --;
+  if(minValue >= maxValue) selectedValue = maxValue;
+  else{
+    if(encoderDirection > 0) selectedValue++;
+    else if(encoderDirection < 0) selectedValue --;
 
-  if(selectedValue < minValue) selectedValue = minValue;
-  else if(selectedValue > maxValue) selectedValue = maxValue;
+    if(selectedValue < minValue) selectedValue = minValue;
+    else if(selectedValue > maxValue) selectedValue = maxValue;
+  }
 
   if((encoderDirection != 0) || (*firstFrame)){
     if(*firstFrame) *firstFrame = false;
@@ -213,11 +249,14 @@ uint8_t lcdDiceValueMenu(const char* valueName, bool* firstFrame,  uint8_t minVa
 
   int8_t encoderDirection = encoder.read() / 4;
 
-  if(encoderDirection > 0) selectedValueIndex++;
-  else if(encoderDirection < 0) selectedValueIndex --;
+  if(minValueIndex >= maxValueIndex) selectedValueIndex = maxValueIndex;
+  else{
+    if(encoderDirection > 0) selectedValueIndex++;
+    else if(encoderDirection < 0) selectedValueIndex --;
 
-  if(selectedValueIndex < minValueIndex) selectedValueIndex = minValueIndex;
-  else if(selectedValueIndex > maxValueIndex) selectedValueIndex = maxValueIndex;
+    if(selectedValueIndex < minValueIndex) selectedValueIndex = minValueIndex;
+    else if(selectedValueIndex > maxValueIndex) selectedValueIndex = maxValueIndex;
+  }
 
   if((encoderDirection != 0) || (*firstFrame)){
     if(*firstFrame) *firstFrame = false;

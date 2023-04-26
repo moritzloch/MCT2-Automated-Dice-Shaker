@@ -35,6 +35,14 @@ uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
         case ST_GAMESETTINGS:
             gameSettingsStateFunction(FSM, menus[MENU_GAMESETTINGS]);
             break;
+        
+        case ST_GMSTNRPLAYERS:
+            gmStNrPlayersStateFunction(FSM);
+            break;
+
+        case ST_GMSTNRLIVES:
+            gmStNrLivesStateFunction(FSM);
+            break;
 
         case ST_CPUTURN:
             cpuTurnStateFunction(FSM);
@@ -92,8 +100,24 @@ uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
             endOfGameStateFunction(FSM);
             break;
 
+        case ST_DICEROLLMENU:
+            diceRollMenuStateFunction(FSM, menus[MENU_DICEROLL]);
+            break;
+
+        case ST_DRMNRDICE:
+            drmNrDiceStateFunction(FSM);
+            break;
+
+        case ST_DRMNREYES:
+            drmNrEyesStateFunction(FSM);
+            break;
+
         case ST_DICEROLL:
             diceRollStateFunction(FSM);
+            break;
+
+        default:
+            mainMenuStateFunction(FSM, menus[MENU_MAIN]);
             break;
     }
 
@@ -107,9 +131,21 @@ uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu){
 
     if(FSM->stateTransition){
         FSM->gameMode = (gameMode_t) mainMenu->selectedIndex;
-        if(FSM->gameMode == GM_MAEXLE) FSM->nextState = ST_GAMESETTINGS;
-        else if(FSM->gameMode == GM_DICEROLL) FSM->nextState = ST_DICEROLL;
-        else FSM->nextState = ST_MENU;
+        switch(FSM->gameMode){
+            case GM_MAEXLE: 
+                FSM->nextState = ST_GAMESETTINGS;
+                break;
+            case GM_DICEROLL: 
+                FSM->nextState = ST_DICEROLLMENU;
+                break;
+            case GM_SETTINGS: 
+                FSM->nextState = FSM->currentState;
+                break;
+            default: 
+                FSM->nextState = FSM->currentState;
+                break;
+        }
+
         FSM->stateTransition = false;
     }
     else lcdScrollMenu(mainMenu, mainMenuItemNames, &FSM->firstFrame);
@@ -121,16 +157,59 @@ uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu){
 uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettingsMenu){
 
     if(FSM->stateTransition){
-        if(gameSettingsMenu->selectedIndex == 0){
-            randomSeed(analogRead(0));
-            FSM->nextPlayer = (state_t) random(0, FSM->numberOfPlayers + 1);
-            resetTurn(FSM);
-            if(FSM->currentPlayer == 0) FSM->nextState = ST_CPUTURN;
-            else FSM->nextState = ST_PLAYERTURN;
+        switch(gameSettingsMenu->selectedIndex){
+            case 0:
+                for(uint8_t i = 0; i < FSM->numberOfPlayers + 1; i++){
+                    if(i < (FSM->numberOfPlayers + 1)) FSM->lifeCount[i] = FSM->numberOfLives;
+                    else FSM->lifeCount[i] = 0;
+                }
+                randomSeed(analogRead(0));
+                FSM->nextPlayer = (state_t) random(0, FSM->numberOfPlayers + 1);
+                resetTurn(FSM);
+                if(FSM->currentPlayer == 0) FSM->nextState = ST_CPUTURN;
+                else FSM->nextState = ST_PLAYERTURN;
+
+                break;
+
+            case 1:
+                FSM->nextState = ST_GMSTNRPLAYERS;
+                break;
+
+            case 2: 
+                FSM->nextState = ST_GMSTNRLIVES;
+                break;
+
+            default:
+                FSM->nextState = FSM->currentState;
+                break;
         }
         FSM->stateTransition = false;
     }
     else lcdScrollMenu(gameSettingsMenu, gameSettingsMenuItemNames, &FSM->firstFrame);
+
+    return 0;
+}
+
+
+uint8_t gmStNrPlayersStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_GAMESETTINGS;
+        FSM->stateTransition = false;
+    }
+    else lcdValueMenu("Anzahl Spieler:", &FSM->firstFrame, 0, 8, FSM->numberOfPlayers);
+
+    return 0;
+}
+
+
+uint8_t gmStNrLivesStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_GAMESETTINGS;
+        FSM->stateTransition = false;
+    }
+    else lcdValueMenu("Anzahl Leben:", &FSM->firstFrame, 0, 99, FSM->numberOfLives);
 
     return 0;
 }
@@ -156,17 +235,17 @@ uint8_t cpuDiceRollStateFunction(FsmProperties* FSM){
     }
     else{
         if(FSM->firstFrame){
-            getRandomDiceRoll(&FSM->diceRollIndex);
+            getMaexleDiceRoll(&FSM->diceRollIndex);
             if(FSM->diceRollIndex > FSM->prevDiceRollIndex){
                 FSM->trueNumberAnnounced = true;
             }
             else{
                 while(!(FSM->diceRollIndex > FSM->prevDiceRollIndex)){
-                    getRandomDiceRoll(&FSM->diceRollIndex);
+                    getMaexleDiceRoll(&FSM->diceRollIndex);
                 }
                 FSM->trueNumberAnnounced = false;
             }
-            lcdPrintDiceNumber(indexToValueLUT[FSM->diceRollIndex], &FSM->firstFrame);
+            lcdPrintMaexleDiceNumber(indexToValueLUT[FSM->diceRollIndex], &FSM->firstFrame);
         }
     }
 
@@ -399,13 +478,62 @@ uint8_t endOfGameStateFunction(FsmProperties* FSM){
 }
 
 
+uint8_t diceRollMenuStateFunction(FsmProperties* FSM, MenuProperties* diceRollMenu){
+
+    if(FSM->stateTransition){
+        switch(diceRollMenu->selectedIndex){
+            case 0:
+                FSM->nextState = ST_DICEROLL;
+                break;
+            case 1:
+                FSM->nextState = ST_DRMNRDICE;
+                break;
+            case 2: 
+                FSM->nextState = ST_DRMNREYES;
+                break;
+            default:
+                FSM->nextState = FSM->currentState;
+                break;
+        }
+        FSM->stateTransition = false;
+    }
+    else lcdScrollMenu(diceRollMenu, diceRollMenuItemNames, &FSM->firstFrame);
+
+    return 0;
+}
+
+
+uint8_t drmNrDiceStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_DICEROLLMENU;
+        FSM->stateTransition = false;
+    }
+    else lcdValueMenu("Anzahl Wuerfel:", &FSM->firstFrame, 1, 5, FSM->numberOfDice);
+
+    return 0;
+}
+
+
+uint8_t drmNrEyesStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_DICEROLLMENU;
+        FSM->stateTransition = false;
+    }
+    else lcdValueMenu("Max. Augenzahl:", &FSM->firstFrame, 1, 20, FSM->numberOfEyes);
+
+    return 0;
+}
+
+
 uint8_t diceRollStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
         FSM->nextState = ST_DICEROLL;
         FSM->stateTransition = false;
     }
-    else lcdPrint("Wuerfeln", "", &FSM->firstFrame);
+    else lcdPrintCustomDiceNumber(FSM->numberOfDice, FSM->numberOfEyes, &FSM->firstFrame);
 
     return 0;
 }
@@ -413,23 +541,24 @@ uint8_t diceRollStateFunction(FsmProperties* FSM){
 
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
 
-    resetMenuProperties(menus[MENU_MAIN], 3);
-    resetMenuProperties(menus[MENU_GAMESETTINGS], 4);
+    resetMenuProperties(menus[MENU_MAIN], 4);
+    resetMenuProperties(menus[MENU_GAMESETTINGS], 3);
     resetMenuProperties(menus[MENU_LIEDETECTION], 2);
+    resetMenuProperties(menus[MENU_DICEROLL], 3);
 
     FSM->firstFrame = true;
     FSM->currentState = ST_MENU;
     FSM->nextState = ST_MENU;
     FSM->stateTransition = false;
+
     FSM->numberOfLives = STANDARDNUMBEROFLIVES;
     FSM->numberOfPlayers = STANDARDNUMBEROFPLAYERS;
     FSM->prevDiceRollIndex = -1;
     FSM->diceRollIndex = -1;
     FSM->winningPlayer = -1;
 
-    for(uint8_t i = 0; i < FSM->numberOfPlayers + 1; i++){
-        FSM->lifeCount[i] = FSM->numberOfLives;
-    }
+    FSM->numberOfDice = STANDARDNUMBEROFDICE;
+    FSM->numberOfEyes = STANDARDNUMBEROFEYES;
 
     return 0;
 }
@@ -441,7 +570,6 @@ uint8_t resetTurn(FsmProperties* FSM){
     while(!(FSM->lifeCount[FSM->currentPlayer] > 0)){
         FSM->currentPlayer += 1;
         if(FSM->currentPlayer > FSM->numberOfPlayers) FSM->currentPlayer = 0;
-        //Serial.print(FSM->currentPlayer);Serial.print(FSM->nextPlayer);Serial.println(FSM->players[FSM->currentPlayer]->FSM->lifeCount);
     }
 
     FSM->nextPlayer = FSM->currentPlayer + 1;

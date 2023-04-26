@@ -19,6 +19,7 @@ static MenuProperties mainMenuProperties;
 static const char* mainMenuItemNames[] = {
     "Maexle",
     "Wuerfeln",
+    "Noten wuerfeln",
     "Einstellungen"
 };
 
@@ -27,8 +28,7 @@ static MenuProperties gameSettingsMenuProperties;
 static const char* gameSettingsMenuItemNames[] = {
     "SPIEL BEGINNEN",
     "Anzahl Spieler",
-    "Anzahl Leben",
-    "Anzahl Wuerfel"
+    "Anzahl Leben"
 };
 
 static MenuProperties lieDetectionMenuProperties;
@@ -38,16 +38,26 @@ static const char* lieDetectionMenuItemNames[] = {
     "Luege"
 };
 
+static MenuProperties diceRollMenuProperties;
+
+static const char* diceRollMenuItemNames[] = {
+    "WUERFELN",
+    "Anzahl Wuerfel",
+    "Max. Augenzahl"
+};
+
 
 static MenuProperties* menus[] = {
     &mainMenuProperties,
     &gameSettingsMenuProperties,
-    &lieDetectionMenuProperties
+    &lieDetectionMenuProperties,
+    &diceRollMenuProperties
 };
 enum menuIndex_t{
     MENU_MAIN,
     MENU_GAMESETTINGS,
-    MENU_LIEDETECTION
+    MENU_LIEDETECTION,
+    MENU_DICEROLL
 };
 
 
@@ -55,7 +65,9 @@ uint8_t lcdPrint(const char* firstLineText, const char* secondLineText, bool* fi
 
 uint8_t lcdPrintPlayerNumber(const char* firstLineText, const char* secondLineText, uint8_t playerNumber, bool* firstFrame);
 
-uint8_t lcdPrintDiceNumber(uint8_t diceNumber, bool* firstFrame);
+uint8_t lcdPrintMaexleDiceNumber(uint8_t diceNumber, bool* firstFrame);
+
+uint8_t lcdPrintCustomDiceNumber(uint8_t nrDice, uint8_t nrEyes, bool* firstFrame);
 
 uint8_t lcdPrintLives(uint8_t playerNumber, uint8_t lives, bool* firstFrame);
 

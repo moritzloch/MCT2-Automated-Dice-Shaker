@@ -89,7 +89,7 @@ uint8_t clearInput(){
 }
 
 
-uint8_t getRandomDiceRoll(int8_t* diceRollIndex){
+uint8_t getMaexleDiceRoll(int8_t* diceRollIndex){
 
   uint8_t diceRoll;
 
@@ -103,6 +103,18 @@ uint8_t getRandomDiceRoll(int8_t* diceRollIndex){
   else diceRoll = (10 * digit2) + digit1;
 
   *diceRollIndex = valueToIndexLUT[diceRoll];
+
+  return 0;
+}
+
+
+uint8_t getCustomDiceRoll(uint8_t* diceRoll, uint8_t nrDice, uint8_t nrEyes){
+
+  for(uint8_t i = 0; i < nrDice; i++){
+    randomSeed(analogRead(0));
+    diceRoll[i] = random(1, nrEyes + 1);
+    delay(10);
+  }
 
   return 0;
 }

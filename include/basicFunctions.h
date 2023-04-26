@@ -41,7 +41,9 @@ void encoderPressed();
 
 void resetPressed();
 
-uint8_t getRandomDiceRoll(int8_t* diceRoll);
+uint8_t getMaexleDiceRoll(int8_t* diceRoll);
+
+uint8_t getCustomDiceRoll(uint8_t* diceRoll, uint8_t nrDice, uint8_t nrEyes);
 
 bool checkIfGreater(uint8_t value, uint8_t compValue);
 
