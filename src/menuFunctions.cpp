@@ -156,6 +156,27 @@ uint8_t lcdPrintLives(uint8_t playerNumber, uint8_t lives, bool* firstFrame){
 }
 
 
+uint8_t lcdPrintGrade(float maxGrade, bool* firstFrame){
+
+  if(*firstFrame){
+    *firstFrame = false;
+
+    float grade;
+    getGrade(&grade, maxGrade);
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Note:");
+    lcd.setCursor(0,1);
+    lcd.print(grade);
+    lcd.setCursor(3, 1);
+    lcd.print(" ");
+  }
+
+  return 0;
+}
+
+
 uint8_t createCustomLCDChars(){
 
   lcd.createChar(arrowLeft, arrowLeftChar);
@@ -237,6 +258,37 @@ uint8_t lcdValueMenu(const char* valueName, bool* firstFrame,  uint8_t minValue,
     lcd.print(valueName);
     lcd.setCursor(0,1);
     lcd.print(selectedValue);
+  }
+
+  return 0;
+}
+
+
+uint8_t lcdFloatValueMenu(const char* valueName, bool* firstFrame,  float minValue, float maxValue, float &selectedValue){
+
+  int8_t encoderDirection = encoder.read() / 4;
+
+  if(minValue >= maxValue) selectedValue = maxValue;
+  else{
+    if(encoderDirection > 0) selectedValue += 0.1f;
+    else if(encoderDirection < 0) selectedValue -= 0.1f;
+
+    if(selectedValue < minValue) selectedValue = minValue;
+    else if(selectedValue > maxValue) selectedValue = maxValue;
+  }
+
+  if((encoderDirection != 0) || (*firstFrame)){
+    if(*firstFrame) *firstFrame = false;
+    encoder.write(0);
+    lcd.clear();
+    lcd.setCursor(15, 1);
+    lcd.write((byte) arrowLeft);
+    lcd.setCursor(0,0);
+    lcd.print(valueName);
+    lcd.setCursor(0,1);
+    lcd.print(selectedValue);
+    lcd.setCursor(3, 1);
+    lcd.print(" ");
   }
 
   return 0;

@@ -120,6 +120,48 @@ uint8_t getCustomDiceRoll(uint8_t* diceRoll, uint8_t nrDice, uint8_t nrEyes){
 }
 
 
+uint8_t getGrade(float* grade, float maxGrade){
+
+  uint8_t maxGradeOne = floor(maxGrade);
+  uint8_t maxGradeDec = round(10 * (maxGrade - maxGradeOne));
+
+  Serial.print(maxGrade);
+  Serial.print("\t");
+  Serial.print(maxGradeOne);
+  Serial.print("\t");
+  Serial.print(maxGradeDec);
+  Serial.print("\t");
+  Serial.print(maxGrade - maxGradeOne);
+  Serial.print("\t");
+  Serial.print(10*(maxGrade - maxGradeOne));
+  Serial.print("\t");
+  Serial.print((uint8_t) (10*(maxGrade - maxGradeOne)));
+  Serial.print("\t");
+
+  randomSeed(analogRead(0));
+  uint8_t digit1 = random(maxGradeOne, 6);
+  delay(10);
+  randomSeed(analogRead(0));
+  uint8_t digit2;
+  if(digit1 == 5) digit2 = 0;
+  else if(digit1 == maxGradeOne) digit2 = random(maxGradeDec, 10);
+  else digit2 = random(0, 10);
+
+  Serial.print(digit1);
+  Serial.print("\t");
+  Serial.print(digit2);
+  Serial.print("\t");
+
+  *grade = digit1 + 0.1 * digit2;
+
+  Serial.print(*grade);
+  Serial.print("\t");
+  Serial.print("\r\n");
+
+  return 0;
+}
+
+
 
 /**
  * ! DEPRECATED !

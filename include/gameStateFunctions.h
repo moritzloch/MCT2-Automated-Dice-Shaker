@@ -31,13 +31,19 @@ enum state_t{
     ST_DICEROLLMENU,
     ST_DICEROLL,
     ST_DRMNRDICE,
-    ST_DRMNREYES
+    ST_DRMNREYES,
+    ST_GRADEMENU,
+    ST_GRMAXGRADE,
+    ST_GRADE,
+    ST_SETTINGSMENU,
+    ST_STAUTODICEROLL
 };
 
 
 enum gameMode_t{
     GM_MAEXLE,
     GM_DICEROLL,
+    GM_GRADES,
     GM_SETTINGS
 };
 
@@ -65,6 +71,10 @@ struct FsmProperties{
 
     int8_t numberOfDice;
     int8_t numberOfEyes;
+
+    float maxGrade = STANDARDMAXGRADE;
+
+    bool autoDiceRoll = STANDARDAUTODICEROLL;
 };
 static FsmProperties fsm;
 
@@ -115,6 +125,17 @@ uint8_t drmNrDiceStateFunction(FsmProperties* FSM);
 uint8_t drmNrEyesStateFunction(FsmProperties* FSM);
 
 uint8_t diceRollStateFunction(FsmProperties* FSM);
+
+uint8_t gradeMenuStateFunction(FsmProperties* FSM, MenuProperties* gradeMenu);
+
+uint8_t grMaxGradeStateFunction(FsmProperties* FSM);
+
+uint8_t gradeStateFunction(FsmProperties* FSM);
+
+uint8_t settingsMenuStateFunction(FsmProperties* FSM, MenuProperties* settingsMenu);
+
+uint8_t stAutoDiceRollStateFunction(FsmProperties* FSM, MenuProperties* autoDiceRollMenu);
+
 
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus);
 

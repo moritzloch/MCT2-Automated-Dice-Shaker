@@ -116,6 +116,26 @@ uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
             diceRollStateFunction(FSM);
             break;
 
+        case ST_GRADEMENU:
+            gradeMenuStateFunction(FSM, menus[MENU_GRADE]);
+            break;
+
+        case ST_GRMAXGRADE:
+            grMaxGradeStateFunction(FSM);
+            break;
+
+        case ST_GRADE:
+            gradeStateFunction(FSM);
+            break;
+
+        case ST_SETTINGSMENU:
+            settingsMenuStateFunction(FSM, menus[MENU_SETTINGS]);
+            break;
+
+        case ST_STAUTODICEROLL:
+            stAutoDiceRollStateFunction(FSM, menus[MENU_AUTODICEROLL]);
+            break;
+
         default:
             mainMenuStateFunction(FSM, menus[MENU_MAIN]);
             break;
@@ -138,8 +158,11 @@ uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu){
             case GM_DICEROLL: 
                 FSM->nextState = ST_DICEROLLMENU;
                 break;
+            case GM_GRADES:
+                FSM->nextState = ST_GRADEMENU;
+                break;
             case GM_SETTINGS: 
-                FSM->nextState = FSM->currentState;
+                FSM->nextState = ST_SETTINGSMENU;
                 break;
             default: 
                 FSM->nextState = FSM->currentState;
@@ -449,12 +472,6 @@ uint8_t endOfTurnStateFunction(FsmProperties* FSM){
         }
         else FSM->nextState = ST_ENDOFGAME;
         FSM->stateTransition = false;
-
-        for(uint8_t i = 0; i < FSM->numberOfPlayers + 1; i++){
-            Serial.print(FSM->lifeCount[i]);
-            Serial.print("\t");
-        }
-        Serial.print("\r\n");
     }
     else FSM->stateTransition = true;
 
@@ -539,12 +556,97 @@ uint8_t diceRollStateFunction(FsmProperties* FSM){
 }
 
 
+uint8_t gradeMenuStateFunction(FsmProperties* FSM, MenuProperties* gradeMenu){
+
+    if(FSM->stateTransition){
+        switch(gradeMenu->selectedIndex){
+            case 0:
+                FSM->nextState = ST_GRADE;
+                break;
+            case 1:
+                FSM->nextState = ST_GRMAXGRADE;
+                break;
+            default:
+                FSM->nextState = FSM->currentState;
+                break;
+        }
+        FSM->stateTransition = false;
+    }
+    else lcdScrollMenu(gradeMenu, gradeMenuItemNames, &FSM->firstFrame);
+
+    return 0;
+}
+
+
+uint8_t grMaxGradeStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_GRADEMENU;
+        FSM->stateTransition = false;
+    }
+    else lcdFloatValueMenu("Max. Bestnote:", &FSM->firstFrame, 1.0f, 5.0f, FSM->maxGrade);
+
+    return 0;
+}
+
+
+uint8_t gradeStateFunction(FsmProperties* FSM){
+
+    if(FSM->stateTransition){
+        FSM->nextState = ST_GRADE;
+        FSM->stateTransition = false;
+    }
+    else lcdPrintGrade(FSM->maxGrade, &FSM->firstFrame);
+
+    return 0;
+}
+
+
+uint8_t settingsMenuStateFunction(FsmProperties* FSM, MenuProperties* settingsMenu){
+
+    if(FSM->stateTransition){
+        switch(settingsMenu->selectedIndex){
+            case 0:
+                FSM->nextState = ST_MENU;
+                break;
+            case 1:
+                FSM->nextState = ST_STAUTODICEROLL;
+                break;
+            default:
+                FSM->nextState = FSM->currentState;
+                break;
+        }
+        FSM->stateTransition = false;
+    }
+    else lcdScrollMenu(settingsMenu, settingsMenuItemNames, &FSM->firstFrame);
+
+    return 0;
+}
+
+
+uint8_t stAutoDiceRollStateFunction(FsmProperties* FSM, MenuProperties* autoDiceRollMenu){
+
+    if(FSM->stateTransition){
+        autoDiceRollMenu->selectedIndex = FSM->autoDiceRoll;
+        FSM->nextState = ST_SETTINGSMENU;
+        FSM->stateTransition = false;
+    }
+    else lcdScrollMenu(autoDiceRollMenu, autoDiceRollMenuItemNames, &FSM->firstFrame);
+
+    return 0;
+}
+
+
+
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
 
     resetMenuProperties(menus[MENU_MAIN], 4);
     resetMenuProperties(menus[MENU_GAMESETTINGS], 3);
     resetMenuProperties(menus[MENU_LIEDETECTION], 2);
     resetMenuProperties(menus[MENU_DICEROLL], 3);
+    resetMenuProperties(menus[MENU_GRADE], 2);
+    resetMenuProperties(menus[MENU_SETTINGS], 2);
+    resetMenuProperties(menus[MENU_AUTODICEROLL], 2);
 
     FSM->firstFrame = true;
     FSM->currentState = ST_MENU;
@@ -559,6 +661,8 @@ uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
 
     FSM->numberOfDice = STANDARDNUMBEROFDICE;
     FSM->numberOfEyes = STANDARDNUMBEROFEYES;
+
+    FSM->maxGrade = STANDARDMAXGRADE;
 
     return 0;
 }

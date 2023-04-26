@@ -18,6 +18,10 @@
 #define STANDARDNUMBEROFDICE    1
 #define STANDARDNUMBEROFEYES    6
 
+#define STANDARDMAXGRADE      1.0f
+
+#define STANDARDAUTODICEROLL    0
+
 
 #define LCD_COLS    16
 #define LCD_ROWS     2

@@ -45,6 +45,8 @@ uint8_t getMaexleDiceRoll(int8_t* diceRoll);
 
 uint8_t getCustomDiceRoll(uint8_t* diceRoll, uint8_t nrDice, uint8_t nrEyes);
 
+uint8_t getGrade(float* grade, float maxGrade);
+
 bool checkIfGreater(uint8_t value, uint8_t compValue);
 
 #endif
