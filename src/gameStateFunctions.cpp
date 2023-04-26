@@ -176,23 +176,28 @@ uint8_t cpuDiceRollStateFunction(FsmProperties* FSM){
 
 uint8_t cpuLieDetectionStateFunction(FsmProperties* FSM){
 
-    bool guessTrueNumberAnnounced;
+    static bool guessTrueNumberAnnounced;
 
     if(FSM->stateTransition){
-        FSM->nextState = ST_PLAYERLIECONFIRMATION1;
+        if(guessTrueNumberAnnounced) FSM->nextState = ST_ENDOFTURN;
+        else FSM->nextState = ST_PLAYERLIECONFIRMATION1;
         FSM->stateTransition = false;
     }
     else{
-        if(indexToValueLUT[FSM->diceRollIndex] == 21){
-            guessTrueNumberAnnounced = false;
-        }
-        else{
-            randomSeed(analogRead(0));
-            guessTrueNumberAnnounced = random(0, 2);
-        }
+        if(FSM->firstFrame){
+            if(indexToValueLUT[FSM->diceRollIndex] == 21){
+                guessTrueNumberAnnounced = false;
+            }
+            else{
+                randomSeed(analogRead(0));
+                guessTrueNumberAnnounced = random(0, 2);
+            }
 
-        if(guessTrueNumberAnnounced) lcdPrint("CPU sagt,", "das ist gelogen", &FSM->firstFrame);
-        else lcdPrint("CPU sagt", "das ist wahr", &FSM->firstFrame);
+            if(guessTrueNumberAnnounced) lcdPrint("CPU sagt,", "das ist wahr", &FSM->firstFrame);
+            else lcdPrint("CPU sagt", "das ist gelogen", &FSM->firstFrame);
+
+            FSM->firstFrame = false;
+        }
     }
 
     return 0;
@@ -249,6 +254,7 @@ uint8_t playerLieDetectionStateFunction(FsmProperties* FSM, MenuProperties* lieD
             if(FSM->currentPlayer == 0) FSM->nextState = ST_CHECKFORLIE1;
             else FSM->nextState = ST_PLAYERLIECONFIRMATION1;
         }
+        resetMenuProperties(lieDetectionMenu, 2);
         FSM->stateTransition = false;
     }
     else lcdScrollMenu(lieDetectionMenu, lieDetectionMenuItemNames, &FSM->firstFrame);
@@ -274,6 +280,7 @@ uint8_t playerLieConfirmationStateFunction2(FsmProperties* FSM, MenuProperties* 
     if(FSM->stateTransition){
         FSM->trueNumberAnnounced = !lieDetectionMenu->selectedIndex;
         FSM->nextState = ST_CHECKFORLIE1; 
+        resetMenuProperties(lieDetectionMenu, 2);
         FSM->stateTransition = false;
     }
     else lcdScrollMenu(lieDetectionMenu, lieDetectionMenuItemNames, &FSM->firstFrame);
@@ -444,7 +451,6 @@ uint8_t resetTurn(FsmProperties* FSM){
         if(FSM->nextPlayer > FSM->numberOfPlayers) FSM->nextPlayer = 0;
     }
     
-
     FSM->prevDiceRollIndex = FSM->diceRollIndex;
 
     return 0;

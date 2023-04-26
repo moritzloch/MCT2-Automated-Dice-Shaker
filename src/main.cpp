@@ -67,6 +67,7 @@ void loop(){
   Serial.print(FSM.gameMode);
   Serial.print("\t");*/
   //Serial.print(fsm.firstFrame);
+  //Serial.print(menus[MENU_LIEDETECTION]->cursorPos);
   //Serial.print("\r\n");
   
 }
