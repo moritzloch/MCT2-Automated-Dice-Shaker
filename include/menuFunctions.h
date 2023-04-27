@@ -1,11 +1,24 @@
 #ifndef MENU_FUNCTIONS
 #define MENU_FUNCTIONS
-
+/**
+ * @file menuFunctions.h
+ * @author Marco Schweizer, Moritz Loch
+ * @brief Functions for LCD menus & printing
+ * @version 1.0
+ * @date 2023-04-27
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include <stdint.h>
 
 
 uint8_t initMenu();
 
+/**
+ * @brief Stores all menu properties
+ * 
+ */
 struct MenuProperties{
     uint8_t cursorPos = 0;
     uint8_t itemNumber;
@@ -14,6 +27,10 @@ struct MenuProperties{
     //char* itemNames[];
 };
 
+/**
+ * @brief Main Menu for game mode selection
+ * 
+ */
 static MenuProperties mainMenuProperties;
 static const char* mainMenuItemNames[] = {
     "Maexle",
@@ -22,6 +39,10 @@ static const char* mainMenuItemNames[] = {
     "Einstellungen"
 };
 
+/**
+ * @brief Menu for "Mäxle" game settings
+ * 
+ */
 static MenuProperties gameSettingsMenuProperties;
 static const char* gameSettingsMenuItemNames[] = {
     "SPIEL BEGINNEN",
@@ -29,12 +50,20 @@ static const char* gameSettingsMenuItemNames[] = {
     "Anzahl Leben"
 };
 
+/**
+ * @brief Menu for Lie Detection
+ * 
+ */
 static MenuProperties lieDetectionMenuProperties;
 static const char* lieDetectionMenuItemNames[] = {
     "Wahrheit",
     "Luege"
 };
 
+/**
+ * @brief Menu for dice roll game mode settings
+ * 
+ */
 static MenuProperties diceRollMenuProperties;
 static const char* diceRollMenuItemNames[] = {
     "WUERFELN",
@@ -42,12 +71,20 @@ static const char* diceRollMenuItemNames[] = {
     "Max. Augenzahl"
 };
 
+/**
+ * @brief Menu for grade game mode settings
+ * 
+ */
 static MenuProperties gradeMenuProperties;
 static const char* gradeMenuItemNames[] = {
     "NOTEN WUERFELN",
     "Max. Bestnote"
 };
 
+/**
+ * @brief Menu for general settings
+ * 
+ */
 static MenuProperties settingsMenuProperties;
 static const char* settingsMenuItemNames[] = {
     "ZURUECK",
@@ -60,7 +97,10 @@ static const char* autoDiceRollMenuItemNames[] = {
     "An"
 };
 
-
+/**
+ * @brief Array of all menu properties
+ * 
+ */
 static MenuProperties* menus[] = {
     &mainMenuProperties,
     &gameSettingsMenuProperties,
@@ -70,6 +110,10 @@ static MenuProperties* menus[] = {
     &settingsMenuProperties,
     &autoDiceRollMenuProperties
 };
+/**
+ * @brief Enum menus
+ * 
+ */
 enum menuIndex_t{
     MENU_MAIN,
     MENU_GAMESETTINGS,

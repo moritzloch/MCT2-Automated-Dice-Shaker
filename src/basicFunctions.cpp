@@ -1,7 +1,7 @@
 /**
  * @file basicFunctions.cpp
  * @author Marco Schweizer, Moritz Loch
- * @brief Basic Functions for initialising the program
+ * @brief Basic Functions for initialising the program and handling pseudorandom numbers
  * @version 1.0
  * @date 2023-04-02
  * 
@@ -21,7 +21,7 @@
 
 
 /**
- * @brief initialising Serial Monitor and pins
+ * @brief initialising Serial Monitor, pins & interrupts
  * 
  * @return uint8_t 0
  */
@@ -89,6 +89,12 @@ uint8_t clearInput(){
 }
 
 
+/**
+ * @brief Get random "Mäxle" dice roll
+ * 
+ * @param diceRollIndex Index of current dice roll
+ * @return uint8_t 0
+ */
 uint8_t getMaexleDiceRoll(int8_t* diceRollIndex){
 
   uint8_t diceRoll;
@@ -108,6 +114,14 @@ uint8_t getMaexleDiceRoll(int8_t* diceRollIndex){
 }
 
 
+/**
+ * @brief Get random dice roll with custom dice & eyes number
+ * 
+ * @param diceRoll Array of values of dice rolls 
+ * @param nrDice Number of rolled dice
+ * @param nrEyes Number of maximum dice eyes
+ * @return uint8_t 0
+ */
 uint8_t getCustomDiceRoll(uint8_t* diceRoll, uint8_t nrDice, uint8_t nrEyes){
 
   for(uint8_t i = 0; i < nrDice; i++){
@@ -120,6 +134,13 @@ uint8_t getCustomDiceRoll(uint8_t* diceRoll, uint8_t nrDice, uint8_t nrEyes){
 }
 
 
+/**
+ * @brief Get random grade lower than maximum grade
+ * 
+ * @param grade Value of grde
+ * @param maxGrade Maximum achieveable grade
+ * @return uint8_t 0
+ */
 uint8_t getGrade(float* grade, float maxGrade){
 
   uint8_t maxGradeOne = floor(maxGrade);
@@ -164,13 +185,13 @@ uint8_t getGrade(float* grade, float maxGrade){
 
 
 /**
- * ! DEPRECATED !
- * @brief 
+ * ! DEPRECATED ! "Mäxle" dice roll are stored as indeces
+ * @brief Check for greater "Mäxle" value
  * 
- * @param value 
- * @param compValue 
- * @return true 
- * @return false 
+ * @param value "Mäxle" value
+ * @param compValue "Mäxle" comparison value 
+ * @return true when value >= compValue
+ * @return false when value < compValue
  */
 bool checkIfGreater(uint8_t value, uint8_t compValue){
 

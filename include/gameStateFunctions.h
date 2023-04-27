@@ -1,12 +1,21 @@
 #ifndef GAMESTATE_FUNCTIONS
 #define GAMESTATE_FUNCTIONS
-
+/**
+ * @file gameStateFunctions.h
+ * @author Marco Schweizer, Moritz Loch
+ * @brief Defining FSM states, properties & functions
+ * @version 1.0
+ * @date 2023-04-27
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include <stdint.h>
 #include "menuFunctions.h"
 
 
 /**
- * @brief Definition of all possible FSM states
+ * @brief Enum FSM states
  * 
  */
 enum state_t{
@@ -40,6 +49,10 @@ enum state_t{
 };
 
 
+/**
+ * @brief Enum game modes
+ * 
+ */
 enum gameMode_t{
     GM_MAEXLE,
     GM_DICEROLL,

@@ -1,6 +1,15 @@
 #ifndef TCS_FUNCTIONS
 #define TCS_FUNCTIONS
-
+/**
+ * @file tcsFunctions.h
+ * @author Marco Schweizer, Moritz Loch
+ * @brief Color Sensor functions
+ * @version 1.0
+ * @date 2023-04-27
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include <stdint.h>
 #include <MD_TCS230.h>
 
@@ -30,14 +39,13 @@ static sensorData blackCalibData = {0, 0, 0};
 static sensorData whiteCalibData = {0, 0, 0};
 
 /**
- * @brief Color Table for matching
+ * @brief Color Table for matching colors
  * 
  */
 typedef struct{
   char name[9];     // color name
   colorData rgb;    // RGB value
 }colorTable;
-
 static colorTable colorDescriptions[] = {
   {"WHITE",     {0, 0, 0}},
   {"BLACK",     {0, 0, 0}},

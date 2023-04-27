@@ -1,9 +1,22 @@
 #ifndef BASIC_FUNCTIONS
 #define BASIC_FUNCTIONS
-
+/**
+ * @file basicFunctions.h
+ * @author Marco Schweizer, Moritz Loch
+ * @brief Basic functions for I/O and pseudorandom numbers
+ * @version 1.0
+ * @date 2023-04-27
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include <stdint.h>
 
 
+/**
+ * @brief LUT to convert "Mäxle" index to "Mäxle" dice value
+ * 
+ */
 static const int8_t indexToValueLUT[] = {
     31, 32,
     41, 42, 43, 
@@ -13,6 +26,10 @@ static const int8_t indexToValueLUT[] = {
     21
 };
 
+/**
+ * @brief LUT to convert "Mäxle" dice value to "Mäxle" index
+ * 
+ */
 static const int8_t valueToIndexLUT[] = {
                                         -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,

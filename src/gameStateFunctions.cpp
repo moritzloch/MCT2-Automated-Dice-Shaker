@@ -21,7 +21,8 @@
 /**
  * @brief General Control FSM
  * 
- * @param currentState Current State of FSM
+ * @param FSM Properties of FSM
+ * @param menus Properties of menus
  * @return uint8_t 0
  */
 uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
@@ -147,6 +148,13 @@ uint8_t gameStateFSM(FsmProperties* FSM, MenuProperties** menus){
 }
 
 
+/**
+ * @brief Function in main menu state: Selection of game mode
+ * 
+ * @param FSM Properties of FSM
+ * @param mainMenu Properties of main menu
+ * @return uint8_t 0
+ */
 uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu){
 
     if(FSM->stateTransition){
@@ -177,6 +185,13 @@ uint8_t mainMenuStateFunction(FsmProperties* FSM, MenuProperties* mainMenu){
 }
 
 
+/**
+ * @brief Function in game settings state: Start or configure "Mäxle"
+ * 
+ * @param FSM Properties of FSM
+ * @param gameSettingsMenu Properties of game settings menu
+ * @return uint8_t 0
+ */
 uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettingsMenu){
 
     if(FSM->stateTransition){
@@ -214,6 +229,12 @@ uint8_t gameSettingsStateFunction(FsmProperties* FSM, MenuProperties* gameSettin
 }
 
 
+/**
+ * @brief Function in game settings number of player state: Selection of number of players in "Mäxle"
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t gmStNrPlayersStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -226,6 +247,12 @@ uint8_t gmStNrPlayersStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in game settings number of lives state: Selection of number of lives in "Mäxle"
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t gmStNrLivesStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -238,6 +265,12 @@ uint8_t gmStNrLivesStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in cpu turn state: Notify of cpu turn
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t cpuTurnStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -250,6 +283,12 @@ uint8_t cpuTurnStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in cpu dice roll state: Print random "Mäxle" dice roll
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t cpuDiceRollStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -276,6 +315,12 @@ uint8_t cpuDiceRollStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in cpu lie detection state: CPU randomly determines if previous dice roll is true/false
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t cpuLieDetectionStateFunction(FsmProperties* FSM){
 
     static bool guessTrueNumberAnnounced;
@@ -306,6 +351,12 @@ uint8_t cpuLieDetectionStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in player turn state: Notify of player turn
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t playerTurnStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -318,6 +369,12 @@ uint8_t playerTurnStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in player dice roll state: Player selects announced number (Minimum: previous number)
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t playerDiceRollStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -332,6 +389,12 @@ uint8_t playerDiceRollStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in before lie detection state: Determine and notify next player/cpu that has to decide
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t beforeLieDetectionStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -348,6 +411,13 @@ uint8_t beforeLieDetectionStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in player lie detection state: Player decides wheter previous player said the truth/lied
+ * 
+ * @param FSM Properties of FSM
+ * @param lieDetectionMenu Properties of lie detection menu
+ * @return uint8_t 0
+ */
 uint8_t playerLieDetectionStateFunction(FsmProperties* FSM, MenuProperties* lieDetectionMenu){
 
     if(FSM->stateTransition){

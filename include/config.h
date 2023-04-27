@@ -12,19 +12,25 @@
  */
 
 
+/**
+ * @brief Standard settings at powerup/reset
+ * 
+ */
 #define STANDARDNUMBEROFLIVES   3 
 #define STANDARDNUMBEROFPLAYERS 2
-
 #define STANDARDNUMBEROFDICE    1
 #define STANDARDNUMBEROFEYES    6
-
 #define STANDARDMAXGRADE      1.0f
-
 #define STANDARDAUTODICEROLL    0
 
 
+/**
+ * @brief size of LCD display
+ * 
+ */
 #define LCD_COLS    16
 #define LCD_ROWS     2
+
 
 /**
  * @brief Defining input and output pins
