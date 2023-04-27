@@ -13,15 +13,15 @@
 
 
 /**
- * @brief Standard settings at powerup/reset
+ * @brief Default settings at powerup/reset
  * 
  */
-#define STANDARDNUMBEROFLIVES   3 
-#define STANDARDNUMBEROFPLAYERS 2
-#define STANDARDNUMBEROFDICE    1
-#define STANDARDNUMBEROFEYES    6
-#define STANDARDMAXGRADE      1.0f
-#define STANDARDAUTODICEROLL    0
+#define DEFAULTNUMBEROFLIVES   3 
+#define DEFAULTNUMBEROFPLAYERS 2
+#define DEFAULTNUMBEROFDICE    1
+#define DEFAULTNUMBEROFEYES    6
+#define DEFAULTMAXGRADE      1.0f
+#define DEFAULTAUTODICEROLL    0
 
 
 /**

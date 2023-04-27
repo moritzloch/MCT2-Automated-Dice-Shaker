@@ -85,9 +85,9 @@ struct FsmProperties{
     int8_t numberOfDice;
     int8_t numberOfEyes;
 
-    float maxGrade = STANDARDMAXGRADE;
+    float maxGrade = DEFAULTMAXGRADE;
 
-    bool autoDiceRoll = STANDARDAUTODICEROLL;
+    bool autoDiceRoll = DEFAULTAUTODICEROLL;
 };
 static FsmProperties fsm;
 

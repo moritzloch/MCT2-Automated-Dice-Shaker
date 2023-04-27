@@ -435,6 +435,12 @@ uint8_t playerLieDetectionStateFunction(FsmProperties* FSM, MenuProperties* lieD
 }
 
 
+/**
+ * @brief Function in player lie confirmation state 1: Ask player for decision
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t playerLieConfirmationStateFunction1(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -447,6 +453,13 @@ uint8_t playerLieConfirmationStateFunction1(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in player lie confirmation state 2: Player confirms wheter they said the truth/lied
+ * 
+ * @param FSM Properties of FSM
+ * @param lieDetectionMenu Properties of lie detection menu
+ * @return uint8_t 0
+ */
 uint8_t playerLieConfirmationStateFunction2(FsmProperties* FSM, MenuProperties* lieDetectionMenu){
 
     if(FSM->stateTransition){
@@ -461,6 +474,12 @@ uint8_t playerLieConfirmationStateFunction2(FsmProperties* FSM, MenuProperties* 
 }
 
 
+/**
+ * @brief Function in check for lie state 1: Print player/cpu that was wrong
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t checkForLieStateFunction1(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -482,6 +501,11 @@ uint8_t checkForLieStateFunction1(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in check for lie state 2: Reduce life count of wrong player/cpu and print player/cpu that loses lives
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t checkForLieStateFunction2(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -509,6 +533,11 @@ uint8_t checkForLieStateFunction2(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in check for lie state 3: Print out new life count of player/cpu that lost life
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t checkForLieStateFunction3(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -531,6 +560,11 @@ uint8_t checkForLieStateFunction3(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in end of turn state: Check if game is won and determine new current & next player based on life count
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t endOfTurnStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -549,6 +583,11 @@ uint8_t endOfTurnStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in end of game state: Print out winning player/cpu & reset FSM
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t endOfGameStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -565,6 +604,13 @@ uint8_t endOfGameStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in dice roll settings menu state: Start or configure "Würfeln"
+ * 
+ * @param FSM Properties of FSM
+ * @param diceRollMenu Properties of dice roll menu
+ * @return uint8_t 0
+ */
 uint8_t diceRollMenuStateFunction(FsmProperties* FSM, MenuProperties* diceRollMenu){
 
     if(FSM->stateTransition){
@@ -590,6 +636,12 @@ uint8_t diceRollMenuStateFunction(FsmProperties* FSM, MenuProperties* diceRollMe
 }
 
 
+/**
+ * @brief Function in dice roll menu number of dice state: Selection of number of dice in "Würfeln"
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t drmNrDiceStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -602,6 +654,12 @@ uint8_t drmNrDiceStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in dice roll menu number of eyes state: Selection of number of eyes (max. dice value) in "Würfeln"
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t drmNrEyesStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -614,6 +672,12 @@ uint8_t drmNrEyesStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in dice roll state: Print out random & custom dice roll
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t diceRollStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -626,6 +690,13 @@ uint8_t diceRollStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in grade menu state: Start or configure "Noten würfeln"
+ * 
+ * @param FSM Properties of FSM
+ * @param gradeMenu Properties of grade menu
+ * @return uint8_t 0
+ */
 uint8_t gradeMenuStateFunction(FsmProperties* FSM, MenuProperties* gradeMenu){
 
     if(FSM->stateTransition){
@@ -648,7 +719,12 @@ uint8_t gradeMenuStateFunction(FsmProperties* FSM, MenuProperties* gradeMenu){
 }
 
 
-uint8_t grMaxGradeStateFunction(FsmProperties* FSM){
+/**
+ * @brief Function in grade menu max. grade state: Selection of max. achievable grade in "Noten würfeln"
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */uint8_t grMaxGradeStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
         FSM->nextState = ST_GRADEMENU;
@@ -660,6 +736,12 @@ uint8_t grMaxGradeStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in grade state: Print out random grade worse than max. achievable grade
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t gradeStateFunction(FsmProperties* FSM){
 
     if(FSM->stateTransition){
@@ -672,6 +754,13 @@ uint8_t gradeStateFunction(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Function in settings menu state: Configure general settings
+ * 
+ * @param FSM Properties of FSM
+ * @param settingsMenu Properties of settings menu
+ * @return uint8_t 0
+ */
 uint8_t settingsMenuStateFunction(FsmProperties* FSM, MenuProperties* settingsMenu){
 
     if(FSM->stateTransition){
@@ -694,6 +783,13 @@ uint8_t settingsMenuStateFunction(FsmProperties* FSM, MenuProperties* settingsMe
 }
 
 
+/**
+ * @brief Function in settings auto dice roll state: Set automatic (hardware) dice roll on/off
+ * 
+ * @param FSM Properties of FSM
+ * @param autoDiceRoLlMenu Properties of auto dice roll menu
+ * @return uint8_t 0
+ */
 uint8_t stAutoDiceRollStateFunction(FsmProperties* FSM, MenuProperties* autoDiceRollMenu){
 
     if(FSM->stateTransition){
@@ -708,6 +804,13 @@ uint8_t stAutoDiceRollStateFunction(FsmProperties* FSM, MenuProperties* autoDice
 
 
 
+/**
+ * @brief Resets FSM to default values
+ * 
+ * @param FSM Properties of FSM
+ * @param menus Array of menu properties of all menus
+ * @return uint8_t 0
+ */
 uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
 
     resetMenuProperties(menus[MENU_MAIN], 4);
@@ -723,21 +826,27 @@ uint8_t resetFSM(FsmProperties* FSM, MenuProperties** menus){
     FSM->nextState = ST_MENU;
     FSM->stateTransition = false;
 
-    FSM->numberOfLives = STANDARDNUMBEROFLIVES;
-    FSM->numberOfPlayers = STANDARDNUMBEROFPLAYERS;
+    FSM->numberOfLives = DEFAULTNUMBEROFLIVES;
+    FSM->numberOfPlayers = DEFAULTNUMBEROFPLAYERS;
     FSM->prevDiceRollIndex = -1;
     FSM->diceRollIndex = -1;
     FSM->winningPlayer = -1;
 
-    FSM->numberOfDice = STANDARDNUMBEROFDICE;
-    FSM->numberOfEyes = STANDARDNUMBEROFEYES;
+    FSM->numberOfDice = DEFAULTNUMBEROFDICE;
+    FSM->numberOfEyes = DEFAULTNUMBEROFEYES;
 
-    FSM->maxGrade = STANDARDMAXGRADE;
+    FSM->maxGrade = DEFAULTMAXGRADE;
 
     return 0;
 }
 
 
+/**
+ * @brief Resets "Mäxle" turn: Determining new current & next player based on life count and setting new minimu dice value
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t resetTurn(FsmProperties* FSM){
 
     FSM->currentPlayer = FSM->nextPlayer;
@@ -759,6 +868,12 @@ uint8_t resetTurn(FsmProperties* FSM){
 }
 
 
+/**
+ * @brief Determines wheter all but one players/cpu have no remaining lives and game is won
+ * 
+ * @param FSM Properties of FSM
+ * @return uint8_t 0
+ */
 uint8_t checkForWinner(FsmProperties* FSM){
 
     uint8_t playerWithRemainingLives = 0;
