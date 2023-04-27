@@ -3,7 +3,7 @@
  * @author Marco Schweizer, Moritz Loch
  * @brief Automated Dice Shaker
  * @version 1.0
- * @date 2023-04-02
+ * @date 2023-04-27
  * 
  * @copyright Copyright (c) 2023
  * 
@@ -30,6 +30,10 @@ void setup(){
 
 void loop(){
 
+  /**
+   * @brief Encoder button press
+   * 
+   */
   if(encoderInterrupt){
     (&fsm)->stateTransition = true;
     (&fsm)->firstFrame = true;
@@ -38,6 +42,10 @@ void loop(){
     encoderInterrupt = false;
   }
 
+  /**
+   * @brief Reset button press
+   * 
+   */
   if(resetInterrupt){
     resetFSM(&fsm, menus);
     resetEncoder();
@@ -45,31 +53,12 @@ void loop(){
     resetInterrupt = false;
   }
 
+  /**
+   * @brief Finite State Machine
+   * 
+   */
   gameStateFSM(&fsm, menus);
 
-  /*Serial.print(fsm.currentPlayer);
-  Serial.print("\t");
-  Serial.print(fsm.nextPlayer);*/
-  /*Serial.print(mainMenuProperties.cursorPos);
-  Serial.print("\t");
-  Serial.print(mainMenuProperties.topIndex);
-  Serial.print("\t");
-  Serial.print(mainMenuProperties.itemNumber);
-  Serial.print("\t");
-  Serial.print(mainMenuProperties.selectedIndex);
-  Serial.print("\t");*/
-  /*Serial.print(fsm.currentState);
-  Serial.print("\t");
-  Serial.print(fsm.nextState);
-  Serial.print("\t");*/
-  /*Serial.print(FSM.stateTransition);
-  Serial.print("\t");
-  Serial.print(FSM.gameMode);
-  Serial.print("\t");*/
-  //Serial.print(fsm.firstFrame);
-  //Serial.print(menus[MENU_LIEDETECTION]->cursorPos);
-  //Serial.print("\r\n");
-  
 }
 
 

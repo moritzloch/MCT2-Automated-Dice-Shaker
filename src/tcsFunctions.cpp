@@ -1,5 +1,5 @@
 /**
- * !This library is unused because of unreliabilty issues of the sensor
+ * !This library is unused because of unreliabilty issues of the sensor!
  * @file TCSFunctions.cpp
  * @author Marco Schweizer, Moritz Loch
  * @brief Functions for TCS3200 colour sensor
@@ -144,7 +144,7 @@ uint8_t colorMatch(colorData rgb, uint8_t &matchedColorIndex){
 
 
 /**
- * TODO: One time black/white calibration or on buton press
+ * TODO: One time black/white calibration or on button press
  * @brief Read RGB value and get color of dice
  * 
  * @param matchedColorIndex Index of matched color in color description table
