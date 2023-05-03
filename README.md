@@ -1,8 +1,10 @@
 # Automated Dice Shaker
+
 ***
 Project for "Introduction to Microcomputers 2" by Marco Schweizer & Moritz Loch
 
 ***
+
 ## Konzept
 
 Die Entwicklung des Konzeptes für dieses Projekt erfolgte mithilfe von ChatGPT und dem Prompt "Lustige Arduino Projekte". Die Idee eines automatisierten Würfelbechers wurde zum "Mäxle-Automat" erweitert, ein Automat der das beliebte Würfel-(Trink-)spiel spielen kann.
@@ -12,12 +14,13 @@ Zu Beginn des Projektes zeigte sich, dass der TCS3200 Farbsensor nicht zuverläs
 Deshalb wurde entschieden, Software und Hardware separat zu entwickeln. Beide Komponenten sind so aufeinander abgestimmt, dass eine zukünftige zusammenführung problemlos ist. Die notwendige Schnittstelle dazwischen, ein anderer Sensor ist zukünftig zu Betrachten.
 
 ***
+
 ## Software
 
 Die Software zum Projekt umfasst eine Finite State Machine (FSM) mit 26 Zustände. Diese ermöglicht eine umfangreiche Menüsteuerung, sowie die Konfiguration und Durchführung von drei verschiedene Spielmodi. Die Informationsausgabe erfolgt mit einem 16x2 LCD-Display. Der Spieler kann durch Drehung eines Rotary Encoders Werte auswählen. Zustands-berghänge geschehen bei Knopfdruck des Rotary Encoders. Ein weiterer Knopf setzt den Zustandsautomaten zurück.
-Der Zustandsautomat ist durch ein Switch-Case-Statement implementiert. Dabei besitzt jeder Zustand einer eigene Funktion. In dieser ist sowohl die auszuführende Aktivität als auch der Übergang zum nächsten Zustand geregelt. 
+Der Zustandsautomat ist durch ein Switch-Case-Statement implementiert. Dabei besitzt jeder Zustand einer eigene Funktion. In dieser ist sowohl die auszuführende Aktivität als auch der Übergang zum nächsten Zustand geregelt.
 
-Ausgangspunkt des Programms bildet das Hauptmenü zur Auswahl der Spielmodi. Dieses und alle weiteren Scrollmenüs sind als Funktion 
+Ausgangspunkt des Programms bildet das Hauptmenü zur Auswahl der Spielmodi. Dieses und alle weiteren Scrollmenüs sind als Funktion
 `uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames, bool* firstFrame)`
 implementiert. Diese ermöglicht die Darstellung eines beliebigen Scrollmenüs.
 
@@ -34,10 +37,7 @@ Ein abschließender Zustand überprüft ob das Spiel im vergangen Spielzug berei
 Der vollständige Zustandautomat ist hier zu sehen.
 [Zustandsautomat]
 
-
-
-
-```
+```c
 struct FsmProperties{
     bool stateTransition = false;
     bool firstFrame = true;
@@ -64,13 +64,14 @@ struct FsmProperties{
   };
   static FsmProperties fsm;
   ````
+
 ***
+
 ## Hardware
 
 Das Projekt greift auf eine Vielzahl an Schnittstellen und Modulen zurück. Die Hauptkomponenten für die Funktion der Software sind Display und Rotary Encoder, beides wurde in ein Bedientableau eingebettet zur komfortableren Handhabung.
 
-
-Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster), lag der Fokus vor allem auf dem voll- und halbautomatischem Würfelsystem. Bestehend aus 2 Servos und einer Menge an selbst entworfenen Bauteilen wurde das System von Grund auf entwickelt und kann mit einer Ausreichenden Zuverlässigkeit auf Anforderung oder, falls in den Spieleinstellungen festgelegt, selbstständig würfeln. 
+Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster), lag der Fokus vor allem auf dem voll- und halbautomatischem Würfelsystem. Bestehend aus 2 Servos und einer Menge an selbst entworfenen Bauteilen wurde das System von Grund auf entwickelt und kann mit einer Ausreichenden Zuverlässigkeit auf Anforderung oder, falls in den Spieleinstellungen festgelegt, selbstständig würfeln.
 
 Das System besteht aus 3 Bereichen: Dem Würfelturm, dem Auffangbereich und dem Hubarm.
 Der Würfelturm besteht aus 2 schräg angeordneten Platten, welche den Würfel ablenken, wodurch dieser eine zufällige Flugbahn annimmt. Gespeißt wird er durch den Hubarm. Dieser wiederrum erhält den Würfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der Würfel bei der Landung oder spätestens bei der Beförderung durch den Servo mittig platizert wird, sodass dieser stets in den Behälter am Hubarm gelangt. Durch Toleranzen und Unperfektheiten kann der Würfel quer stehen oder nicht beim ersten Mal in den Behälter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die Zuverlässigkeit wesentlich erhöht werden konnte, weshalb dies im finalen Code implementiert wurde. Befindet sich der Würfel im Behältnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom Würfel ablesen kann. Der Hubarm ist so designed, dass sich der Würfel mitsamt Behältnis bis zu einem Winkel von circa 150° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der Würfel in den Turm geworfen wird.
