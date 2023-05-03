@@ -5,33 +5,33 @@ Project for "Introduction to Microcomputers 2" by Marco Schweizer & Moritz Loch
 ***
 ## Konzept
 
-Die Entwicklung des Konzeptes für dieses Projekt erfolgte mithilfe von ChatGPT und dem Prompt "Lustige Arduino Projekte". Die Idee eines automatisierten Würfelbechers wurde zum "Mäxle-Automat" erweitert, ein Automat der das beliebte Würfel-(Trink-)spiel spielen kann.
-In der ursprünglichen Planung war angedacht, das automatisierte Würfeln durch eine rotierende Grundplatte zu realisieren. Der Würfel sollte durch den Drehimpuls gewürfelt werden. Zur Erkennung des Würfelergebnisses sollte ein Farbsensor die Farbe eines Farbwürfels registrieren.
+Die Entwicklung des Konzeptes fÃ¼r dieses Projekt erfolgte mithilfe von ChatGPT und dem Prompt "Lustige Arduino Projekte". Die Idee eines automatisierten WÃ¼rfelbechers wurde zum "MÃ¤xle-Automat" erweitert, ein Automat der das beliebte WÃ¼rfel-(Trink-)spiel spielen kann.
+In der ursprÃ¼nglichen Planung war angedacht, das automatisierte WÃ¼rfeln durch eine rotierende Grundplatte zu realisieren. Der WÃ¼rfel sollte durch den Drehimpuls gewÃ¼rfelt werden. Zur Erkennung des WÃ¼rfelergebnisses sollte ein Farbsensor die Farbe eines FarbwÃ¼rfels registrieren.
 
-Zu Beginn des Projektes zeigte sich, dass der TCS3200 Farbsensor nicht zuverlässige die Farbe des Farbwürfels identifizieren kann. Grund dafür ist unter anderem, dass keine gleichmäßige Belichtung des Würfels sichergestellt werden konnte und die Farben des Würfels zu nah beieinander liegen, dass häufige Verwechslungen auftraten.
-Deshalb wurde entschieden, Software und Hardware separat zu entwickeln. Beide Komponenten sind so aufeinander abgestimmt, dass eine zukünftige zusammenführung problemlos ist. Die notwendige Schnittstelle dazwischen, ein anderer Sensor ist zukünftig zu Betrachten.
+Zu Beginn des Projektes zeigte sich, dass der TCS3200 Farbsensor nicht zuverlÃ¤ssige die Farbe des FarbwÃ¼rfels identifizieren kann. Grund dafÃ¼r ist unter anderem, dass keine gleichmÃ¤ÃŸige Belichtung des WÃ¼rfels sichergestellt werden konnte und die Farben des WÃ¼rfels zu nah beieinander liegen, dass hÃ¤ufige Verwechslungen auftraten.
+Deshalb wurde entschieden, Software und Hardware separat zu entwickeln. Beide Komponenten sind so aufeinander abgestimmt, dass eine zukÃ¼nftige zusammenfÃ¼hrung problemlos ist. Die notwendige Schnittstelle dazwischen, ein anderer Sensor ist zukÃ¼nftig zu Betrachten.
 
 ***
 ## Software
 
-Die Software zum Projekt umfasst eine Finite State Machine (FSM) mit 26 Zustände. Diese ermöglicht eine umfangreiche Menüsteuerung, sowie die Konfiguration und Durchführung von drei verschiedene Spielmodi. Die Informationsausgabe erfolgt mit einem 16x2 LCD-Display. Der Spieler kann durch Drehung eines Rotary Encoders Werte auswählen. Zustands-berghänge geschehen bei Knopfdruck des Rotary Encoders. Ein weiterer Knopf setzt den Zustandsautomaten zurück.
-Der Zustandsautomat ist durch ein Switch-Case-Statement implementiert. Dabei besitzt jeder Zustand einer eigene Funktion. In dieser ist sowohl die auszuführende Aktivität als auch der Übergang zum nächsten Zustand geregelt. 
+Die Software zum Projekt umfasst eine Finite State Machine (FSM) mit 26 ZustÃ¤nde. Diese ermÃ¶glicht eine umfangreiche MenÃ¼steuerung, sowie die Konfiguration und DurchfÃ¼hrung von drei verschiedene Spielmodi. Die Informationsausgabe erfolgt mit einem 16x2 LCD-Display. Der Spieler kann durch Drehung eines Rotary Encoders Werte auswÃ¤hlen. Zustands-berghÃ¤nge geschehen bei Knopfdruck des Rotary Encoders. Ein weiterer Knopf setzt den Zustandsautomaten zurÃ¼ck.
+Der Zustandsautomat ist durch ein Switch-Case-Statement implementiert. Dabei besitzt jeder Zustand einer eigene Funktion. In dieser ist sowohl die auszufÃ¼hrende AktivitÃ¤t als auch der Ãœbergang zum nÃ¤chsten Zustand geregelt. 
 
-Ausgangspunkt des Programms bildet das Hauptmenü zur Auswahl der Spielmodi. Dieses und alle weiteren Scrollmenüs sind als Funktion 
+Ausgangspunkt des Programms bildet das HauptmenÃ¼ zur Auswahl der Spielmodi. Dieses und alle weiteren ScrollmenÃ¼s sind als Funktion 
 `uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames, bool* firstFrame)`
-implementiert. Diese ermöglicht die Darstellung eines beliebigen Scrollmenüs.
+implementiert. Diese ermÃ¶glicht die Darstellung eines beliebigen ScrollmenÃ¼s.
 
-Vom Hauptmenü aus gelangt der Spieler in die Nebenspielmodi "Würfeln" und "Noten würfeln". Beide können durch Einstellung der Würfel- und Augenzahl bzw. der maximalen Bestnote konfiguriert werden. Alle Spieleinstellungen und -daten werden in der Struktur
+Vom HauptmenÃ¼ aus gelangt der Spieler in die Nebenspielmodi "WÃ¼rfeln" und "Noten wÃ¼rfeln". Beide kÃ¶nnen durch Einstellung der WÃ¼rfel- und Augenzahl bzw. der maximalen Bestnote konfiguriert werden. Alle Spieleinstellungen und -daten werden in der Struktur
 [Code von unten hier rein]
 
-Anschließend liefert das Programm mit jedem Knopfdruck ein neues Würfelergebnis bzw. eine neue Note.
+AnschlieÃŸend liefert das Programm mit jedem Knopfdruck ein neues WÃ¼rfelergebnis bzw. eine neue Note.
 
-Bei Auswahl des Hauptspielmodus "Mäxle" ist zunächst die Auswahl der Anzahl von Leben und die Anzahl der Spieler, die neben der CPU am Spiel teilnehmen. Bei Spielbeginn wird zufällig ein Spieler ausgesucht, der beginnt.
-Menschliche Spieler geben ihre Würfelsumme mittels Drehencoder ein. Die CPU würfelt zufällig. Hier kann zukünftig das automatisierte Würfeln eingebunden werden. 
-Der nächste Spieler entscheidet anschließend mit einem Auswahlmenü ober dem vorhergehenden Spieler glaubt oder nicht. Muss die CPU entscheiden, so tut sie das zufällig. Falls dem würfelndem Spieler nicht geglaubt wird muss dieser nun aufdecken, ob er tatsächlich gelogen hat. Andernfalls beginnt ein neuer Spielzug. Ist der würfelnde Spieler die CPU, dann wird dieser Schritt übersprungen. Zum Schluss wird dem lügenden oder dem falsch ratenden Spieler ein Leben abgezogen.
-Ein abschließender Zustand überprüft ob das Spiel im vergangen Spielzug bereits gewonnen wurde und setzt die Spielzugdaten zurück. Im Falle des gewonnen Spiels wird der Sieger auf dem Display ausgegeben und das Spiel kehrt ins Hauptmenü zurück. Andernfalls beginnt der Spielzug des nächsten Spielers.
+Bei Auswahl des Hauptspielmodus "MÃ¤xle" ist zunÃ¤chst die Auswahl der Anzahl von Leben und die Anzahl der Spieler, die neben der CPU am Spiel teilnehmen. Bei Spielbeginn wird zufÃ¤llig ein Spieler ausgesucht, der beginnt.
+Menschliche Spieler geben ihre WÃ¼rfelsumme mittels Drehencoder ein. Die CPU wÃ¼rfelt zufÃ¤llig. Hier kann zukÃ¼nftig das automatisierte WÃ¼rfeln eingebunden werden. 
+Der nÃ¤chste Spieler entscheidet anschlieÃŸend mit einem AuswahlmenÃ¼ ober dem vorhergehenden Spieler glaubt oder nicht. Muss die CPU entscheiden, so tut sie das zufÃ¤llig. Falls dem wÃ¼rfelndem Spieler nicht geglaubt wird muss dieser nun aufdecken, ob er tatsÃ¤chlich gelogen hat. Andernfalls beginnt ein neuer Spielzug. Ist der wÃ¼rfelnde Spieler die CPU, dann wird dieser Schritt Ã¼bersprungen. Zum Schluss wird dem lÃ¼genden oder dem falsch ratenden Spieler ein Leben abgezogen.
+Ein abschlieÃŸender Zustand Ã¼berprÃ¼ft ob das Spiel im vergangen Spielzug bereits gewonnen wurde und setzt die Spielzugdaten zurÃ¼ck. Im Falle des gewonnen Spiels wird der Sieger auf dem Display ausgegeben und das Spiel kehrt ins HauptmenÃ¼ zurÃ¼ck. Andernfalls beginnt der Spielzug des nÃ¤chsten Spielers.
 
-Der vollständige Zustandautomat ist hier zu sehen.
+Der vollstÃ¤ndige Zustandautomat ist hier zu sehen.
 [Zustandsautomat]
 
 
@@ -67,13 +67,13 @@ struct FsmProperties{
 ***
 ## Hardware
 
-Das Projekt greift auf eine Vielzahl an Schnittstellen und Modulen zurück. Die Hauptkomponenten für die Funktion der Software sind Display und Rotary Encoder, beides wurde in ein Bedientableau eingebettet zur komfortableren Handhabung.
+Das Projekt greift auf eine Vielzahl an Schnittstellen und Modulen zurÃ¼ck. Die Hauptkomponenten fÃ¼r die Funktion der Software sind Display und Rotary Encoder, beides wurde in ein Bedientableau eingebettet zur komfortableren Handhabung.
 
 
-Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster), lag der Fokus vor allem auf dem voll- und halbautomatischem Würfelsystem. Bestehend aus 2 Servos und einer Menge an selbst entworfenen Bauteilen wurde das System von Grund auf entwickelt und kann mit einer Ausreichenden Zuverlässigkeit auf Anforderung oder, falls in den Spieleinstellungen festgelegt, selbstständig würfeln. 
+Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster), lag der Fokus vor allem auf dem voll- und halbautomatischem WÃ¼rfelsystem. Bestehend aus 2 Servos und einer Menge an selbst entworfenen Bauteilen wurde das System von Grund auf entwickelt und kann mit einer Ausreichenden ZuverlÃ¤ssigkeit auf Anforderung oder, falls in den Spieleinstellungen festgelegt, selbststÃ¤ndig wÃ¼rfeln. 
 
-Das System besteht aus 3 Bereichen: Dem Würfelturm, dem Auffangbereich und dem Hubarm.
-Der Würfelturm besteht aus 2 schräg angeordneten Platten, welche den Würfel ablenken, wodurch dieser eine zufällige Flugbahn annimmt. Gespeißt wird er durch den Hubarm. Dieser wiederrum erhält den Würfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der Würfel bei der Landung oder spätestens bei der Beförderung durch den Servo mittig platizert wird, sodass dieser stets in den Behälter am Hubarm gelangt. Durch Toleranzen und Unperfektheiten kann der Würfel quer stehen oder nicht beim ersten Mal in den Behälter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die Zuverlässigkeit wesentlich erhöht werden konnte, weshalb dies im finalen Code implementiert wurde. Befindet sich der Würfel im Behältnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom Würfel ablesen kann. Der Hubarm ist so designed, dass sich der Würfel mitsamt Behältnis bis zu einem Winkel von circa 150° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der Würfel in den Turm geworfen wird.
+Das System besteht aus 3 Bereichen: Dem WÃ¼rfelturm, dem Auffangbereich und dem Hubarm.
+Der WÃ¼rfelturm besteht aus 2 schrÃ¤g angeordneten Platten, welche den WÃ¼rfel ablenken, wodurch dieser eine zufÃ¤llige Flugbahn annimmt. GespeiÃŸt wird er durch den Hubarm. Dieser wiederrum erhÃ¤lt den WÃ¼rfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der WÃ¼rfel bei der Landung oder spÃ¤testens bei der BefÃ¶rderung durch den Servo mittig platizert wird, sodass dieser stets in den BehÃ¤lter am Hubarm gelangt. Durch Toleranzen und Unperfektheiten kann der WÃ¼rfel quer stehen oder nicht beim ersten Mal in den BehÃ¤lter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die ZuverlÃ¤ssigkeit wesentlich erhÃ¶ht werden konnte, weshalb dies im finalen Code implementiert wurde. Befindet sich der WÃ¼rfel im BehÃ¤ltnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom WÃ¼rfel ablesen kann. Der Hubarm ist so designed, dass sich der WÃ¼rfel mitsamt BehÃ¤ltnis bis zu einem Winkel von circa 150Â° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der WÃ¼rfel in den Turm geworfen wird.
 
-![My Image](hw/MCT2_HARDWARE_Skizze.png)
+![My Image](hw/MCT2_HARDWARE_Skizze.png | 100)
 ***
