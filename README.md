@@ -16,13 +16,15 @@ Die folgende Skizze zeigt das ursprüngliche Konzept.
 <img src="dice_tower/urspruenglichesKonzept.png" alt="Skizze des ursprüngliches Konzepts" width="550"/>
 
 Zu Beginn des Projektes zeigte sich, dass der TCS3200 Farbsensor nicht zuverlässige die Farbe des Farbwürfels identifizieren kann. Grund dafür ist unter anderem, dass keine gleichmäßige Belichtung des Würfels sichergestellt werden konnte und die Farben des Würfels zu nah beieinander liegen, dass häufige Verwechslungen auftraten.
-Deshalb wurde entschieden, Software und Hardware separat zu entwickeln. Beide Komponenten sind so aufeinander abgestimmt, dass eine zukünftige Zusammenführung problemlos ist. Die notwendige Schnittstelle dazwischen, ein anderer Sensor ist zukünftig zu Betrachten.
+Deshalb wurde entschieden, Mäxle-Spiel und das Würfeln separat zu entwickeln. Beide Komponenten sind so aufeinander abgestimmt, dass eine zukünftige Zusammenführung problemlos ist. Die notwendige Schnittstelle dazwischen, ein anderer Sensor ist zukünftig zu Betrachten.
 
 ***
 
-## Software
+## Mäxle-Spiel
 
-Die Software zum Projekt umfasst eine Finite State Machine (FSM) mit 26 Zustände. Diese ermöglicht eine umfangreiche Menüsteuerung, sowie die Konfiguration und Durchführung von drei verschiedene Spielmodi. Die Informationsausgabe erfolgt mit einem 16x2 LCD-Display. Der Spieler kann durch Drehung eines Rotary Encoders Werte auswählen. Zustands-berghänge geschehen bei Knopfdruck des Rotary Encoders. Ein weiterer Knopf setzt den Zustandsautomaten zurück.
+Die Software zum Mäxle-Spiel umfasst eine Finite State Machine (FSM) mit 26 Zustände. Diese ermöglicht eine umfangreiche Menüsteuerung, sowie die Konfiguration und Durchführung von drei verschiedene Spielmodi. Die Informationsausgabe erfolgt mit einem 16x2 LCD-Display. Der Spieler kann durch Drehung eines Rotary Encoders Werte auswählen. Zustandsübergänge geschehen bei Knopfdruck des Rotary Encoders. Ein weiterer Knopf setzt den Zustandsautomaten zurück.
+Die Hauptbedienelemente wurden zur komfortableren Handhabung in ein Bedientableau eingebettet.
+
 Der Zustandsautomat ist durch ein Switch-Case-Statement implementiert. Dabei besitzt jeder Zustand einer eigene Funktion. In dieser ist sowohl die auszuführende Aktivität als auch der Übergang zum nächsten Zustand geregelt.
 
 Ausgangspunkt des Programms bildet das Hauptmenü zur Auswahl der Spielmodi. Dieses und alle weiteren Scroll-Menüs sind als Funktion
@@ -72,9 +74,7 @@ Der vollständige Zustandsautomat ist [hier](/doc/Maexle_State_Diagram.pdf) zu s
 
 ***
 
-## Hardware
-
-Das Projekt greift auf eine Vielzahl an Schnittstellen und Modulen zurück. Die Hauptkomponenten für die Funktion der Software sind Display und Rotary Encoder, beides wurde in ein Bedientableau eingebettet zur komfortableren Handhabung.
+## Würfelturm
 
 Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster), lag der Fokus vor allem auf dem voll- und halbautomatischem Würfelsystem. Bestehend aus 2 Servos und einer Menge an selbst entworfenen Bauteilen wurde das System von Grund auf entwickelt und kann mit einer Ausreichenden Zuverlässigkeit auf Anforderung oder, falls in den Spieleinstellungen festgelegt, selbstständig würfeln.
 
