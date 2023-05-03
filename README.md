@@ -75,5 +75,6 @@ Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster),
 Das System besteht aus 3 Bereichen: Dem Würfelturm, dem Auffangbereich und dem Hubarm.
 Der Würfelturm besteht aus 2 schräg angeordneten Platten, welche den Würfel ablenken, wodurch dieser eine zufällige Flugbahn annimmt. Gespeißt wird er durch den Hubarm. Dieser wiederrum erhält den Würfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der Würfel bei der Landung oder spätestens bei der Beförderung durch den Servo mittig platizert wird, sodass dieser stets in den Behälter am Hubarm gelangt. Durch Toleranzen und Unperfektheiten kann der Würfel quer stehen oder nicht beim ersten Mal in den Behälter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die Zuverlässigkeit wesentlich erhöht werden konnte, weshalb dies im finalen Code implementiert wurde. Befindet sich der Würfel im Behältnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom Würfel ablesen kann. Der Hubarm ist so designed, dass sich der Würfel mitsamt Behältnis bis zu einem Winkel von circa 150° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der Würfel in den Turm geworfen wird.
 
-![My Image](hw/MCT2_HARDWARE_Skizze.png | 100)
+![My Image](hw/MCT2_HARDWARE_Skizze.png)
+<img src="hw/MCT2_HARDWARE_Skizze.png" alt="drawing" width="200"/>
 ***
