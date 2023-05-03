@@ -22,18 +22,45 @@ Deshalb wurde entschieden, Mäxle-Spiel und das Würfeln separat zu entwickeln. 
 
 ## Mäxle-Spiel
 
+### Aufbau
+
 Die Software zum Mäxle-Spiel umfasst eine Finite State Machine (FSM) mit 26 Zustände. Diese ermöglicht eine umfangreiche Menüsteuerung, sowie die Konfiguration und Durchführung von drei verschiedene Spielmodi. Die Informationsausgabe erfolgt mit einem 16x2 LCD-Display. Der Spieler kann durch Drehung eines Rotary Encoders Werte auswählen. Zustandsübergänge geschehen bei Knopfdruck des Rotary Encoders. Ein weiterer Knopf setzt den Zustandsautomaten zurück.
+Beide Knöpfe sind Interruptgesteuert.
 Die Hauptbedienelemente wurden zur komfortableren Handhabung in ein Bedientableau eingebettet.
+
+### Programmablauf
+
+Im Setup werden das LCD-Display initiiert, I/O deklariert und Interrupts angehängt. Außerdem werden die Menüs und Spieldaten zurückgesetzt.
+Die Schleife fragt periodisch ab, ob eine der Interrupt-Flaggen gesetzt wurde. Der Encoder-Interrupt löst einen Übergang zum nächsten Zustand aus. Der Reset-Interrupt setzt das Spiel zurück. Andernfalls wird die, zum aktuellen Zustand zugehörige, Funktion ausgeführt.
+Folgende Abbildung zeigt den vereinfachten [Programmablauf](/doc//Maexle_program_sequence.pdf).
+
+<img src="doc/Maexle_program_sequence.png" alt="Mäxle Zustandsdiagramm" width="500"/>
+
+### Zustandsautomat
 
 Der Zustandsautomat ist durch ein Switch-Case-Statement implementiert. Dabei besitzt jeder Zustand einer eigene Funktion. In dieser ist sowohl die auszuführende Aktivität als auch der Übergang zum nächsten Zustand geregelt.
 
-Ausgangspunkt des Programms bildet das Hauptmenü zur Auswahl der Spielmodi. Dieses und alle weiteren Scroll-Menüs sind als Funktion
-`uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames, bool* firstFrame)`
-implementiert. Diese ermöglicht die Darstellung eines beliebigen Scroll-Menüs.
+Ausgangspunkt des Programms bildet das Hauptmenü zur Auswahl der Spielmodi. Dieses und alle weiteren Scroll-Menüs sind als Funktion implementiert. Diese ermöglicht die Darstellung eines beliebigen Scroll-Menüs.
+
+```c
+/**
+ * @brief Custom scroll selection menu on lcd display
+ * 
+ * @param menuProperties Menu from which the items will be selected
+ * @param menuItemNames Names of the items in the menu
+ * @param firstFrame First frame of FSM state flag
+ * @return uint8_t 0
+ */
+uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames, bool* firstFrame)
+```
 
 Vom Hauptmenü aus gelangt der Spieler in die Nebenspielmodi "Würfeln" und "Noten würfeln". Beide können durch Einstellung der Würfel- und Augenzahl bzw. der maximalen Bestnote konfiguriert werden. Alle Spieleinstellungen und -daten werden in der folgenden Struktur gespeichert.
 
 ```c
+/**
+ * @brief Stores all current data of FSM
+ * 
+ */
 struct FsmProperties{
     bool stateTransition = false;
     bool firstFrame = true;
@@ -76,10 +103,25 @@ Der vollständige Zustandsautomat ist [hier](/doc/Maexle_State_Diagram.pdf) zu s
 
 ## Würfelturm
 
-Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster), lag der Fokus vor allem auf dem voll- und halbautomatischem Würfelsystem. Bestehend aus 2 Servos und einer Menge an selbst entworfenen Bauteilen wurde das System von Grund auf entwickelt und kann mit einer Ausreichenden Zuverlässigkeit auf Anforderung oder, falls in den Spieleinstellungen festgelegt, selbstständig würfeln.
+Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster), lag der Fokus vor allem auf dem voll- und halbautomatischem Würfelsystem.
+Das ursprüngliche Konzept mit Farberkennung und rotierender Würfelfläche wurde nicht allein aufgrund des Sensors zugunsten der aktuellen Version verworfen, sondern auch bedingt einiger Probleme in der Hardware. Zum einen ist eine rotierende Platte der vorgesehenen Größe schwer zu realisieren, da der Aufbau komplex sein müsste um nicht (in anfänglichen Tests) aus der Balance zu geraten. Zum anderen sind Zweifel an der Umsetzbarkeit aufgekommen, da die Platte mit einer hohen Drehzahl rotieren müsste um den Würfel anzuheben und zeitgleich der Servo den Becher fest auf der Oberfläche halten soll.
 
-Das System besteht aus drei Bereichen: Dem Würfelturm, dem Auffangbereich und dem Hubarm.
-Der Würfelturm besteht aus zwei schräg angeordneten Platten, welche den Würfel ablenken, wodurch dieser eine zufällige Flugbahn annimmt. Gespeißt wird er durch den Hubarm. Dieser wiederrum erhält den Würfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der Würfel bei der Landung oder spätestens bei der Beförderung durch den Servo mittig platziert wird, sodass dieser stets in den Behälter am Hubarm gelangt. Durch Bauteiltoleranzen kann der Würfel quer stehen oder nicht beim ersten Mal in den Behälter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die Zuverlässigkeit wesentlich erhöht werden konnte, weshalb dies im finalen Code implementiert wurde. Befindet sich der Würfel im Behältnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom Würfel ablesen kann. Der Hubarm ist so designed, dass sich der Würfel mitsamt Behältnis bis zu einem Winkel von circa 150° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der Würfel in den Turm geworfen wird.
+Aufgrund dieser Punkte kam es zum Wechsel der Konzepte: Bestehend aus 2 Servos und einer Menge an [selbst entworfenen Bauteilen](/dice_tower/DiceShaker_Files) wurde ein System von Grund auf entwickelt, das mit einer Ausreichenden Zuverlässigkeit auf Anforderung oder, falls in den Spieleinstellungen festgelegt, selbstständig würfeln kann.
+
+Dieses System besteht aus drei Bereichen: Dem Würfelturm, dem Auffangbereich und dem Hubarm.
+Der Würfelturm besteht aus zwei schräg angeordneten Platten, welche den Würfel ablenken, wodurch dieser eine zufällige Flugbahn annimmt. Gespeißt wird er durch den Hubarm. Dieser wiederrum erhält den Würfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der Würfel bei der Landung oder spätestens bei der Beförderung durch den Servo mittig platziert wird, sodass dieser stets in den Behälter am Hubarm gelangt. Durch Bauteiltoleranzen kann der Würfel quer stehen oder nicht beim ersten Mal in den Behälter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die Zuverlässigkeit wesentlich erhöht werden konnte, weshalb dies im finalen Code implementiert wurde.
+
+Die Ansteuerung der Servos geschieht mit dem Arduino über die `#include Servo.h` Bibliothek. Bei Knopfdruck wird über die Interruptroutine eine Flag gesetzt, welche die Routine abfragt und gegebenfalls einen Würfelvorgang startet. Es wurden 2 Befehle implementiert `void stepServo(int number, int pos)` und `void jumpServo(int number, int pos)`, welche den entsprechenden Servo zu der gewünschten Position bewegt. Die Position des Servos wird schrittweise verändert durch folgende Funktion:
+
+```c
+while ( bottomServo.read() != pos ) {
+        j = bottomServo.read();
+        bottomServo.write(j + ((pos - j) / abs(pos - j)));  //current position +- 1
+        delay(3);
+      }
+````
+
+Befindet sich der Würfel im Behältnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom Würfel ablesen kann. Der Hubarm ist so designed, dass sich der Würfel mitsamt Behältnis bis zu einem Winkel von circa 150° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der Würfel in den Turm geworfen wird.
 
 <img src="dice_tower/MCT2_HARDWARE_Skizze.png" alt="Würfelturm Skizze" width="550"/>
 
