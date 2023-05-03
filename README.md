@@ -24,18 +24,7 @@ Ausgangspunkt des Programms bildet das Hauptmenü zur Auswahl der Spielmodi. Die
 `uint8_t lcdScrollMenu(MenuProperties* menuProperties, const char** menuItemNames, bool* firstFrame)`
 implementiert. Diese ermöglicht die Darstellung eines beliebigen Scrollmenüs.
 
-Vom Hauptmenü aus gelangt der Spieler in die Nebenspielmodi "Würfeln" und "Noten würfeln". Beide können durch Einstellung der Würfel- und Augenzahl bzw. der maximalen Bestnote konfiguriert werden. Alle Spieleinstellungen und -daten werden in der Struktur
-[Code von unten hier rein]
-
-Anschließend liefert das Programm mit jedem Knopfdruck ein neues Würfelergebnis bzw. eine neue Note.
-
-Bei Auswahl des Hauptspielmodus "Mäxle" ist zunächst die Auswahl der Anzahl von Leben und die Anzahl der Spieler, die neben der CPU am Spiel teilnehmen. Bei Spielbeginn wird zufällig ein Spieler ausgesucht, der beginnt.
-Menschliche Spieler geben ihre Würfelsumme mittels Drehencoder ein. Die CPU würfelt zufällig. Hier kann zukünftig das automatisierte Würfeln eingebunden werden. 
-Der nächste Spieler entscheidet anschließend mit einem Auswahlmenü ober dem vorhergehenden Spieler glaubt oder nicht. Muss die CPU entscheiden, so tut sie das zufällig. Falls dem würfelndem Spieler nicht geglaubt wird muss dieser nun aufdecken, ob er tatsächlich gelogen hat. Andernfalls beginnt ein neuer Spielzug. Ist der würfelnde Spieler die CPU, dann wird dieser Schritt übersprungen. Zum Schluss wird dem lügenden oder dem falsch ratenden Spieler ein Leben abgezogen.
-Ein abschließender Zustand überprüft ob das Spiel im vergangen Spielzug bereits gewonnen wurde und setzt die Spielzugdaten zurück. Im Falle des gewonnen Spiels wird der Sieger auf dem Display ausgegeben und das Spiel kehrt ins Hauptmenü zurück. Andernfalls beginnt der Spielzug des nächsten Spielers.
-
-Der vollständige Zustandautomat ist hier zu sehen.
-[Zustandsautomat]
+Vom Hauptmenü aus gelangt der Spieler in die Nebenspielmodi "Würfeln" und "Noten würfeln". Beide können durch Einstellung der Würfel- und Augenzahl bzw. der maximalen Bestnote konfiguriert werden. Alle Spieleinstellungen und -daten werden in der folgenden Struktur gespeichert.
 
 ```c
 struct FsmProperties{
@@ -65,6 +54,16 @@ struct FsmProperties{
   static FsmProperties fsm;
   ````
 
+Anschließend liefert das Programm mit jedem Knopfdruck ein neues Würfelergebnis bzw. eine neue Note.
+
+Bei Auswahl des Hauptspielmodus "Mäxle" ist zunächst die Auswahl der Anzahl von Leben und die Anzahl der Spieler, die neben der CPU am Spiel teilnehmen. Bei Spielbeginn wird zufällig ein Spieler ausgesucht, der beginnt.
+Menschliche Spieler geben ihre Würfelsumme mittels Drehencoder ein. Die CPU würfelt zufällig. Hier kann zukünftig das automatisierte Würfeln mittels Würfelturm eingebunden werden.
+Der nächste Spieler entscheidet anschließend mit einem Auswahlmenü ober dem vorhergehenden Spieler glaubt oder nicht. Muss die CPU entscheiden, so tut sie das zufällig. Falls dem würfelndem Spieler nicht geglaubt wird muss dieser nun aufdecken, ob er tatsächlich gelogen hat. Andernfalls beginnt ein neuer Spielzug. Ist der würfelnde Spieler die CPU, dann wird dieser Schritt übersprungen. Zum Schluss wird dem lügenden oder dem falsch ratenden Spieler ein Leben abgezogen.
+Ein abschließender Zustand überprüft ob das Spiel im vergangen Spielzug bereits gewonnen wurde und setzt die Spielzugdaten zurück. Im Falle des gewonnen Spiels wird der Sieger auf dem Display ausgegeben und das Spiel kehrt ins Hauptmenü zurück. Andernfalls beginnt der Spielzug des nächsten Spielers.
+
+Der vollständige Zustandautomat ist hier zu sehen.
+[Zustandsautomat]
+
 ***
 
 ## Hardware
@@ -77,4 +76,5 @@ Das System besteht aus 3 Bereichen: Dem Würfelturm, dem Auffangbereich und dem 
 Der Würfelturm besteht aus 2 schräg angeordneten Platten, welche den Würfel ablenken, wodurch dieser eine zufällige Flugbahn annimmt. Gespeißt wird er durch den Hubarm. Dieser wiederrum erhält den Würfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der Würfel bei der Landung oder spätestens bei der Beförderung durch den Servo mittig platizert wird, sodass dieser stets in den Behälter am Hubarm gelangt. Durch Toleranzen und Unperfektheiten kann der Würfel quer stehen oder nicht beim ersten Mal in den Behälter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die Zuverlässigkeit wesentlich erhöht werden konnte, weshalb dies im finalen Code implementiert wurde. Befindet sich der Würfel im Behältnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom Würfel ablesen kann. Der Hubarm ist so designed, dass sich der Würfel mitsamt Behältnis bis zu einem Winkel von circa 150° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der Würfel in den Turm geworfen wird.
 
 <img src="hw/MCT2_HARDWARE_Skizze.png" alt="drawing" width="550"/>
+
 ***
