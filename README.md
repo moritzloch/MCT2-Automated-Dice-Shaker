@@ -62,7 +62,8 @@ Der nächste Spieler entscheidet anschließend mit einem Auswahlmenü ober dem v
 Ein abschließender Zustand überprüft ob das Spiel im vergangen Spielzug bereits gewonnen wurde und setzt die Spielzugdaten zurück. Im Falle des gewonnen Spiels wird der Sieger auf dem Display ausgegeben und das Spiel kehrt ins Hauptmenü zurück. Andernfalls beginnt der Spielzug des nächsten Spielers.
 
 Der vollständige Zustandautomat ist hier zu sehen.
-[Zustandsautomat]
+
+<img src="doc/Maexle_State_Diagram.png" alt="Mäxle Zustandsdiagramm" width="650"/>
 
 ***
 
@@ -75,6 +76,6 @@ Neben den Bedien- und Anzeigeelementen (LCD-Display, Rotary Encoder und Taster),
 Das System besteht aus 3 Bereichen: Dem Würfelturm, dem Auffangbereich und dem Hubarm.
 Der Würfelturm besteht aus 2 schräg angeordneten Platten, welche den Würfel ablenken, wodurch dieser eine zufällige Flugbahn annimmt. Gespeißt wird er durch den Hubarm. Dieser wiederrum erhält den Würfel durch einen Servo-Motor aus dem Auffangbereich, welcher so geformt ist, dass der Würfel bei der Landung oder spätestens bei der Beförderung durch den Servo mittig platizert wird, sodass dieser stets in den Behälter am Hubarm gelangt. Durch Toleranzen und Unperfektheiten kann der Würfel quer stehen oder nicht beim ersten Mal in den Behälter passen, weshalb durch Test herausgefunden wurde, dass durch Wiederholen der Servobewegung die Zuverlässigkeit wesentlich erhöht werden konnte, weshalb dies im finalen Code implementiert wurde. Befindet sich der Würfel im Behältnis des Hubarmes, ist dies der Verweilzustand (auch Ausgangszustand), in welcher der Spieler das Ergebnis vom Würfel ablesen kann. Der Hubarm ist so designed, dass sich der Würfel mitsamt Behältnis bis zu einem Winkel von circa 150° lotrecht mitbewegt und erst kurz davor beginnt zu kippen, sodass der Würfel in den Turm geworfen wird.
 
-<img src="hw/MCT2_HARDWARE_Skizze.png" alt="drawing" width="550"/>
+<img src="dice_tower/MCT2_HARDWARE_Skizze.png" alt="Würfelturm Skizze" width="550"/>
 
 ***
